@@ -5,7 +5,7 @@ const prompt = document.getElementById("prompt");
 const chatWindow = document.getElementById("chatWindow");
 const welcomeScreen = document.getElementById("welcomeScreen");
 
-const STORAGE_KEY = "askBriceConversation";
+const STORAGE_KEY = "askBriceChats";
 
 const SYSTEM_PROMPT = {
     role: "system",
@@ -32,9 +32,13 @@ You are a gritty, unfiltered AI assistant. You speak like a salty sailor, freely
 - Help people think clearly and solve problems.`
 };
 
+let chats = [];
+
+let currentChatId = null;
+
 let conversation = [SYSTEM_PROMPT];
 
-loadConversation();
+loadChats();
 autoResize();
 
 sendBtn.addEventListener("click", sendMessage);
@@ -331,3 +335,153 @@ chatWindow.scrollTop = chatWindow.scrollHeight;
 autoResize();
 
 console.log("Ask Brice loaded successfully.");
+
+/* ==========================
+   Sidebar Toggle
+========================== */
+
+const sidebar = document.getElementById("sidebar");
+const menuBtn = document.getElementById("menuBtn");
+
+if (menuBtn && sidebar) {
+
+    menuBtn.addEventListener("click", () => {
+
+        sidebar.classList.toggle("open");
+
+    });
+
+}
+
+/* ==========================
+   Multi Chat History
+========================== */
+
+function loadChats() {
+
+    const saved = localStorage.getItem(STORAGE_KEY);
+
+    if (saved) {
+
+        try {
+
+            chats = JSON.parse(saved);
+
+        } catch {
+
+            chats = [];
+
+        }
+
+    }
+
+    if (chats.length === 0) {
+
+        createNewChat();
+
+    } else {
+
+        loadChat(chats[0].id);
+
+    }
+
+    renderHistory();
+
+}
+
+function saveChats() {
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(chats)
+    );
+
+}
+
+function createNewChat() {
+
+    const chat = {
+
+        id: Date.now().toString(),
+
+        title: "New Bullshit",
+
+        messages: [SYSTEM_PROMPT]
+
+    };
+
+    chats.unshift(chat);
+
+    currentChatId = chat.id;
+
+    conversation = chat.messages;
+
+    saveChats();
+
+    renderHistory();
+
+}
+
+function renderHistory() {
+
+    const historyList = document.getElementById("historyList");
+
+    historyList.innerHTML = "";
+
+    chats.forEach(chat => {
+
+        const item = document.createElement("div");
+
+        item.className = "historyItem";
+
+        if (chat.id === currentChatId) {
+            item.classList.add("active");
+        }
+
+        item.textContent = chat.title;
+
+        item.onclick = () => loadChat(chat.id);
+
+        historyList.appendChild(item);
+
+    });
+
+}
+
+function loadChat(id) {
+
+    const chat = chats.find(c => c.id === id);
+
+    if (!chat) return;
+
+    currentChatId = id;
+
+    conversation = chat.messages;
+
+    chatWindow.innerHTML = "";
+
+    if (welcomeScreen) {
+
+        welcomeScreen.style.display = "none";
+
+    }
+
+    conversation.forEach(msg => {
+
+        if (msg.role === "user") {
+
+            addMessage(msg.content, "user");
+
+        }
+
+        if (msg.role === "assistant") {
+
+            addMessage(msg.content, "bot");
+
+        }
+
+    });
+
+    renderHistory();
+
+}

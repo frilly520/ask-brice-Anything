@@ -316,3 +316,73 @@ body{
     }
 }
 
+/* ===========================
+   PAST BULLSHIT SIDEBAR
+=========================== */
+
+.sidebar-header{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.newChatBtn{
+
+    width:100%;
+
+    padding:12px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#2b2b2b;
+
+    color:white;
+
+    font-size:16px;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.newChatBtn:hover{
+
+    background:#3a3a3a;
+
+}
+
+.historyItem{
+
+    padding:12px;
+
+    margin-bottom:10px;
+
+    border-radius:12px;
+
+    background:#151515;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    color:white;
+
+}
+
+.historyItem:hover{
+
+    background:#242424;
+
+}
+
+.historyItem.active{
+
+    background:#404040;
+
+    font-weight:bold;
+
+}
