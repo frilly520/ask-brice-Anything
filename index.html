@@ -3,42 +3,56 @@
 
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Ask Brice</title>
+    <title>Ask Brice</title>
 
-<!-- PWA -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#000000">
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000000">
 
-<!-- Google Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Rubik+Dirt&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Permanent+Marker&family=Rubik+Dirt&display=swap" rel="stylesheet">
 
-<!-- CSS -->
-<link rel="stylesheet" href="style.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
 
 </head>
 
 <body>
 
-<!-- Sidebar -->
-<div id="sidebar" class="sidebar">
+<!-- ==========================
+     SIDEBAR
+========================== -->
+
+<aside id="sidebar" class="sidebar">
 
     <div class="sidebar-header">
+
         <h2>History</h2>
+
+        <button id="newChatBtn" class="circleButton">
+            ➕
+        </button>
+
     </div>
 
     <div id="historyList">
-        <p>No conversations yet</p>
+
+        <p>No conversations yet.</p>
+
     </div>
 
-</div>
+</aside>
 
-<!-- Header -->
+<!-- ==========================
+     HEADER
+========================== -->
+
 <header class="header">
 
     <button id="menuBtn" class="iconButton">
@@ -46,51 +60,93 @@
     </button>
 
     <div class="logo">
+
         <span class="brainEmoji">🧠</span>
+
         <span>Ask Brice</span>
+
     </div>
 
 </header>
 
-<!-- Main Chat -->
+<!-- ==========================
+     CHAT WINDOW
+========================== -->
+
 <main id="chatWindow" class="chatWindow">
 
-    <div id="welcomeScreen">
+    <section id="welcomeScreen">
 
         <h1>
+
             WHAT THE FUCK<br>
             DO YOU WANT?
+
         </h1>
 
         <p class="subtitle">
+
             Ask me anything.<br>
             I'll figure that shit out.
+
         </p>
 
-    </div>
+    </section>
 
 </main>
 
-<!-- Bottom Bar -->
+<!-- Typing Indicator -->
+
+<div id="typingIndicator" class="typingIndicator" style="display:none;">
+
+    <span></span>
+    <span></span>
+    <span></span>
+
+</div>
+
+<!-- ==========================
+     INPUT BAR
+========================== -->
+
 <footer class="bottomBar">
 
-    <button id="micBtn" class="circleButton">
+    <button id="micBtn" class="circleButton" title="Voice">
+
         🎙️
+
     </button>
 
     <textarea
         id="prompt"
         rows="1"
         placeholder="Ask Brice anything..."
-    ></textarea>
+        autocomplete="off"
+        spellcheck="true"></textarea>
 
-    <button id="sendBtn" class="circleButton">
+    <button id="sendBtn" class="circleButton" title="Send">
+
         🧠
+
     </button>
 
 </footer>
 
+<!-- ==========================
+     JAVASCRIPT
+========================== -->
+
 <script src="script.js"></script>
 
+<script>
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("service-worker.js")
+        .catch(err => console.log("Service Worker:", err));
+    });
+}
+</script>
+
 </body>
+
 </html>
