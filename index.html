@@ -3,59 +3,53 @@
 
 <head>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Ask Brice</title>
+<title>Ask Brice</title>
 
-    <!-- PWA -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#000000">
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Permanent+Marker&family=Rubik+Dirt&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Permanent+Marker&family=Rubik+Dirt&family=Caveat:wght@700&display=swap" rel="stylesheet">
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css">
 
 </head>
 
 <body>
 
-<!-- ==========================
-     SIDEBAR
-========================== -->
+<!-- Sidebar -->
 
 <aside id="sidebar" class="sidebar">
 
-    <div id="sidebar" class="sidebar">
+    <div class="sidebar-header">
 
- <div class="sidebar-header">
+        <h2>Past Bullshit</h2>
 
-    <h2>Past Bullshit</h2>
+        <button id="newChatBtn" class="newChatBtn">
 
-    <button id="newChatBtn" class="newChatBtn">
-        + New Chat
-    </button>
+            + New Chat
 
-</div>
+        </button>
 
-<div id="historyList"></div>
+    </div>
 
+    <div id="historyList"></div>
 
 </aside>
 
-<!-- ==========================
-     HEADER
-========================== -->
+<!-- Header -->
 
 <header class="header">
 
     <button id="menuBtn" class="iconButton">
+
         ☰
+
     </button>
 
     <div class="logo">
@@ -68,82 +62,76 @@
 
 </header>
 
-<!-- ==========================
-     CHAT WINDOW
-========================== -->
+<!-- Chat -->
 
 <main id="chatWindow" class="chatWindow">
 
-    <section id="welcomeScreen">
+<!-- ==========================
+     WELCOME SCREEN
+========================== -->
 
-        <h1>
+<section id="welcomeScreen">
 
-            WHAT THE FUCK<br>
-            DO YOU WANT?
+    <h1>
 
-        </h1>
+        WHAT THE FUCK<br>
+        DO YOU WANT?
 
-        <p class="subtitle">
+    </h1>
 
-            Ask me anything.<br>
-            I'll figure that shit out.
+    <p class="welcomeScript">
 
-        </p>
+        Ask me anything…
 
-    </section>
+    </p>
+
+    <p class="subtitle">
+
+        I'll figure that shit out.
+
+    </p>
+
+</section>
 
 </main>
 
-<!-- Typing Indicator -->
-
-<div id="typingIndicator" class="typingIndicator" style="display:none;">
-
-    <span></span>
-    <span></span>
-    <span></span>
-
-</div>
-
-<!-- ==========================
-     INPUT BAR
-========================== -->
-
 <footer class="bottomBar">
 
-    <button id="micBtn" class="circleButton" title="Voice">
+<button id="micBtn" class="circleButton">
 
-        🎙️
+🎙️
 
-    </button>
+</button>
 
-    <textarea
-        id="prompt"
-        rows="1"
-        placeholder="Ask Brice anything..."
-        autocomplete="off"
-        spellcheck="true"></textarea>
+<textarea
+id="prompt"
+rows="1"
+placeholder="Ask Brice anything..."
+autocomplete="off"
+spellcheck="true"></textarea>
 
-    <button id="sendBtn" class="circleButton" title="Send">
+<button id="sendBtn" class="circleButton">
 
-        🧠
+🧠
 
-    </button>
+</button>
 
 </footer>
-
-<!-- ==========================
-     JAVASCRIPT
-========================== -->
 
 <script src="script.js"></script>
 
 <script>
+
 if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-        navigator.serviceWorker.register("service-worker.js")
-        .catch(err => console.log("Service Worker:", err));
-    });
+
+window.addEventListener("load", () => {
+
+navigator.serviceWorker.register("sw.js");
+
+});
+
 }
+
 </script>
 
 </body>

@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Permanent+Marker&family=Rubik+Dirt&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Permanent+Marker&family=Rubik+Dirt&family=Caveat:wght@700&display=swap');
 
 /* ===========================
    ASK BRICE
 =========================== */
 
-*{
+{
     margin:0;
     padding:0;
     box-sizing:border-box;
@@ -148,6 +148,7 @@ body{
     border:1px solid rgba(255,255,255,.08);
     border-bottom-left-radius:8px;
 }
+
 /* ===========================
    WELCOME SCREEN
 =========================== */
@@ -166,18 +167,28 @@ body{
     font-family:"Permanent Marker",cursive;
     font-size:58px;
     line-height:1;
-    margin-bottom:24px;
+    margin-bottom:18px;
     color:#fff;
+}
+
+.welcomeScript{
+    font-family:"Caveat",cursive;
+    font-size:44px;
+    font-weight:700;
+    color:#fff;
+    line-height:1.1;
+    margin:18px 0 8px;
 }
 
 .subtitle{
     font-family:"Inter",sans-serif;
     font-size:20px;
+    font-style:italic;
     font-weight:500;
     color:#bdbdbd;
-    line-height:1.8;
+    line-height:1.6;
     max-width:600px;
-    margin:auto;
+    margin:0 auto;
 }
 
 /* ===========================
@@ -215,7 +226,6 @@ body{
     border-radius:50%;
 
     background:#242424;
-
     color:#fff;
 
     display:flex;
@@ -223,9 +233,7 @@ body{
     align-items:center;
 
     font-size:24px;
-
     cursor:pointer;
-
     transition:.2s;
 }
 
@@ -242,19 +250,14 @@ body{
     flex:1;
 
     background:none;
-
     border:none;
-
     outline:none;
-
     resize:none;
 
-    color:white;
+    color:#fff;
 
     font-family:"Inter",sans-serif;
-
     font-size:17px;
-
     line-height:1.6;
 
     max-height:160px;
