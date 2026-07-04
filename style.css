@@ -1,17 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Permanent+Marker&family=Rubik+Dirt&family=Caveat:wght@700&display=swap');
 
-/* ===========================
+/* ==========================================
    ASK BRICE
-=========================== */
+========================================== */
 
-{
+*{
     margin:0;
     padding:0;
     box-sizing:border-box;
     -webkit-tap-highlight-color:transparent;
 }
 
-html,body{
+html,
+body{
     width:100%;
     height:100%;
 }
@@ -23,9 +24,10 @@ body{
     color:#fff;
     overflow:hidden;
 }
-/* ===========================
+
+/* ==========================================
    HEADER
-=========================== */
+========================================== */
 
 .header{
     height:78px;
@@ -33,9 +35,10 @@ body{
     align-items:center;
     justify-content:center;
     position:relative;
-    border-bottom:1px solid rgba(255,255,255,.05);
     background:rgba(0,0,0,.15);
     backdrop-filter:blur(20px);
+    border-bottom:1px solid rgba(255,255,255,.05);
+    z-index:20;
 }
 
 .logo{
@@ -44,7 +47,6 @@ body{
     gap:12px;
     font-family:"Rubik Dirt",cursive;
     font-size:28px;
-    color:#fff;
 }
 
 .brainEmoji{
@@ -66,9 +68,10 @@ body{
 }
 
 .iconButton:hover{
-    background:#2f2f2f;
+    background:#303030;
     transform:scale(1.08);
 }
+
 /* ==========================================
    SIDEBAR
 ========================================== */
@@ -76,21 +79,22 @@ body{
 .sidebar{
     position:fixed;
     top:0;
-    left:-320px;
-    width:320px;
-    max-width:80vw;
+    left:-250px;
+
+    width:250px;
     height:100vh;
 
     background:#101010;
+
     border-right:1px solid rgba(255,255,255,.08);
 
-    padding:24px;
+    padding:20px;
 
     overflow-y:auto;
 
-    z-index:1000;
+    transition:left .25s ease;
 
-    transition:left .3s ease;
+    z-index:999;
 
     box-shadow:8px 0 30px rgba(0,0,0,.45);
 }
@@ -106,15 +110,52 @@ body{
     margin-bottom:24px;
 }
 
+.sidebar-header h2{
+    font-size:24px;
+    font-weight:700;
+}
+
+.newChatBtn{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    background:#242424;
+    color:#fff;
+    font-size:16px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.newChatBtn:hover{
+    background:#333;
+}
+
 #historyList{
     display:flex;
     flex-direction:column;
-    gap:12px;
+    gap:10px;
 }
 
-/* ===========================
+.historyItem{
+    padding:12px;
+    border-radius:12px;
+    background:#181818;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.historyItem:hover{
+    background:#282828;
+}
+
+.historyItem.active{
+    background:#3b82f6;
+}
+
+/* ==========================================
    CHAT
-=========================== */
+========================================== */
 
 .chatWindow{
     height:calc(100vh - 185px);
@@ -133,8 +174,8 @@ body{
     line-height:1.7;
     font-size:16px;
     font-weight:500;
-    word-wrap:break-word;
     white-space:pre-wrap;
+    word-wrap:break-word;
     animation:fadeIn .25s ease;
     box-shadow:0 8px 24px rgba(0,0,0,.25);
 }
@@ -142,7 +183,6 @@ body{
 .user{
     align-self:flex-end;
     background:linear-gradient(135deg,#3b82f6,#2563eb);
-    color:#fff;
     border-bottom-right-radius:8px;
 }
 
@@ -150,14 +190,13 @@ body{
 .ai{
     align-self:flex-start;
     background:#181818;
-    color:#f5f5f5;
     border:1px solid rgba(255,255,255,.08);
     border-bottom-left-radius:8px;
 }
 
-/* ===========================
+/* ==========================================
    WELCOME SCREEN
-=========================== */
+========================================== */
 
 #welcomeScreen{
     position:absolute;
@@ -173,39 +212,32 @@ body{
     font-family:"Permanent Marker",cursive;
     font-size:58px;
     line-height:1;
-    margin-bottom:18px;
-    color:#fff;
+    margin-bottom:20px;
 }
 
 .welcomeScript{
     font-family:"Caveat",cursive;
     font-size:44px;
-    font-weight:700;
-    color:#fff;
-    line-height:1.1;
-    margin:18px 0 8px;
+    margin:20px 0 8px;
 }
 
 .subtitle{
-    font-family:"Inter",sans-serif;
     font-size:20px;
     font-style:italic;
-    font-weight:500;
     color:#bdbdbd;
     line-height:1.6;
-    max-width:600px;
-    margin:0 auto;
 }
 
-/* ===========================
+/* ==========================================
    INPUT BAR
-=========================== */
+========================================== */
 
 .bottomBar{
     position:fixed;
     left:50%;
     bottom:18px;
     transform:translateX(-50%);
+
     width:94%;
     max-width:920px;
 
@@ -218,6 +250,7 @@ body{
     border-radius:24px;
 
     background:rgba(22,22,22,.88);
+
     backdrop-filter:blur(18px);
 
     border:1px solid rgba(255,255,255,.08);
@@ -228,6 +261,7 @@ body{
 .circleButton{
     width:52px;
     height:52px;
+
     border:none;
     border-radius:50%;
 
@@ -235,11 +269,13 @@ body{
     color:#fff;
 
     display:flex;
-    justify-content:center;
     align-items:center;
+    justify-content:center;
 
     font-size:24px;
+
     cursor:pointer;
+
     transition:.2s;
 }
 
@@ -249,12 +285,11 @@ body{
 }
 
 .circleButton:active{
-    transform:scale(.96);
+    transform:scale(.95);
 }
 
 #prompt{
     flex:1;
-
     background:none;
     border:none;
     outline:none;
@@ -275,9 +310,26 @@ body{
     color:#777;
 }
 
-/* ===========================
+/* ==========================================
+   MICROPHONE
+========================================== */
+
+.listening{
+    animation:pulse 1s infinite;
+    box-shadow:0 0 20px rgba(70,150,255,.9);
+}
+
+@keyframes pulse{
+
+    0%{transform:scale(1);}
+    50%{transform:scale(1.08);}
+    100%{transform:scale(1);}
+
+}
+
+/* ==========================================
    SCROLLBAR
-=========================== */
+========================================== */
 
 ::-webkit-scrollbar{
     width:8px;
@@ -288,15 +340,12 @@ body{
     border-radius:20px;
 }
 
-::-webkit-scrollbar-track{
-    background:transparent;
-}
-
-/* ===========================
+/* ==========================================
    ANIMATIONS
-=========================== */
+========================================== */
 
 @keyframes fadeIn{
+
     from{
         opacity:0;
         transform:translateY(12px);
@@ -306,34 +355,19 @@ body{
         opacity:1;
         transform:translateY(0);
     }
-}
-
-/* ===========================
-   MICROPHONE ANIMATION
-=========================== */
-
-.listening{
-    animation:pulse 1s ease-in-out infinite;
-    box-shadow:0 0 20px rgba(77,163,255,.8);
-}
-
-@keyframes pulse{
-
-    0%{
-        transform:scale(1);
-    }
-
-    50%{
-        transform:scale(1.08);
-    }
-
-    100%{
-        transform:scale(1);
-    }
 
 }
+
+/* ==========================================
+   MOBILE
+========================================== */
 
 @media (max-width:768px){
+
+    .sidebar{
+        width:220px;
+        left:-220px;
+    }
 
     .message{
         max-width:92%;
@@ -344,6 +378,10 @@ body{
         font-size:42px;
     }
 
+    .welcomeScript{
+        font-size:36px;
+    }
+
     .subtitle{
         font-size:17px;
     }
@@ -351,5 +389,5 @@ body{
     .logo{
         font-size:22px;
     }
-}
 
+}
