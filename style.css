@@ -70,6 +70,7 @@ body{
     transform:scale(1.08);
 }
 /* ===========================
+/* ===========================
    SIDEBAR
 =========================== */
 
@@ -77,12 +78,13 @@ body{
     position:fixed;
     top:0;
     left:-300px;
-    width:280px;
+    width:300px;
+    max-width:80vw;
     height:100%;
     background:#101010;
     border-right:1px solid rgba(255,255,255,.08);
-    transition:.3s;
-    z-index:999;
+    transition:left .3s ease;
+    z-index:1000;
     padding:24px;
     overflow-y:auto;
 }
@@ -92,8 +94,9 @@ body{
 }
 
 .sidebar-header{
-    font-size:22px;
-    font-weight:700;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
     margin-bottom:24px;
 }
 
@@ -101,8 +104,8 @@ body{
     display:flex;
     flex-direction:column;
     gap:12px;
-    color:#bdbdbd;
 }
+
 /* ===========================
    CHAT
 =========================== */
@@ -294,6 +297,31 @@ body{
         opacity:1;
         transform:translateY(0);
     }
+}
+
+/* ===========================
+   MICROPHONE ANIMATION
+=========================== */
+
+.listening{
+    animation:pulse 1s ease-in-out infinite;
+    box-shadow:0 0 20px rgba(77,163,255,.8);
+}
+
+@keyframes pulse{
+
+    0%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.08);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+
 }
 
 @media (max-width:768px){

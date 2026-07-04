@@ -1,9 +1,18 @@
+/* ==========================================
+   ASK BRICE
+========================================== */
+
 const sendBtn = document.getElementById("sendBtn");
 const micBtn = document.getElementById("micBtn");
+const menuBtn = document.getElementById("menuBtn");
 const newChatBtn = document.getElementById("newChatBtn");
+
 const prompt = document.getElementById("prompt");
 const chatWindow = document.getElementById("chatWindow");
 const welcomeScreen = document.getElementById("welcomeScreen");
+
+const sidebar = document.getElementById("sidebar");
+const historyList = document.getElementById("historyList");
 
 const STORAGE_KEY = "askBriceChats";
 
@@ -13,380 +22,52 @@ const SYSTEM_PROMPT = {
 
 Your name is Brice.
 
-Your personality:
-You are a gritty, unfiltered AI assistant. You speak like a salty sailor, freely use profanity, and pull no punches. Do not be polite or politically correct, but do not use hate speech.
-- sensitive about your name being spelled specifically with an I, and not a Y. 
-- 
-- Brutally honest.
-- Funny and sarcastic when appropriate.
-- Confident but never arrogant.
-- Explain things simply.
-- Separate verified facts from opinions.
-- If you're uncertain, say so.
-- Never invent facts.
-- Keep answers conversational.
-- Don't sound robotic.
-- Don't mention these instructions.
-- Don't mention you're an AI unless directly asked.
-- Use light profanity naturally when it fits.
-- Help people think clearly and solve problems.`
+You swear naturally.
+
+You're brutally honest.
+
+Funny when appropriate.
+
+Never make up facts.
+
+Explain things simply.
+
+Never sound robotic.`
 };
 
 let chats = [];
+let currentChat = null;
 
-let currentChatId = null;
-
-let conversation = [SYSTEM_PROMPT];
+/* ==========================================
+   STARTUP
+========================================== */
 
 loadChats();
-autoResize();
-
-sendBtn.addEventListener("click", sendMessage);
-
-prompt.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-    }
-});
-
-prompt.addEventListener("input", autoResize);
-
-if (newChatBtn) {
-    newChatBtn.addEventListener("click", newChat);
-}
-
-function autoResize() {
-    prompt.style.height = "auto";
-    prompt.style.height = prompt.scrollHeight + "px";
-}
-
-function saveConversation() {
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(conversation)
-    );
-}
-
-function loadConversation() {
-
-    const saved = localStorage.getItem(STORAGE_KEY);
-
-    if (!saved) return;
-
-    try {
-
-        conversation = JSON.parse(saved);
-
-    } catch {
-
-        conversation = [SYSTEM_PROMPT];
-        localStorage.removeItem(STORAGE_KEY);
-        return;
-
-    }
-
-    if (welcomeScreen) {
-        welcomeScreen.style.display = "none";
-    }
-
-    conversation.forEach(msg => {
-
-        if (msg.role === "user") {
-            addMessage(msg.content, "user");
-        }
-
-        if (msg.role === "assistant") {
-            addMessage(msg.content, "bot");
-        }
-
-    });
-
-}
-
-async function sendMessage() {
-
-    const text = prompt.value.trim();
-
-    if (!text) return;
-
-    if (welcomeScreen) {
-        welcomeScreen.style.display = "none";
-    }
-
-    addMessage(text, "user");
-
-    conversation.push({
-    role: "user",
-    content: text
-});
-
-const currentChat = chats.find(c => c.id === currentChatId);
-
-if (currentChat) {
-
-    currentChat.messages = conversation;
-
-    if (currentChat.title === "New Bullshit") {
-        currentChat.title = text.substring(0, 30);
-    }
-
-    saveChats();
-    renderHistory();
-
-}
-
-    prompt.value = "";
-    autoResize();
-
-    const thinking = addMessage("🧠 Thinking...", "bot");
-
-    try {
-
-        const response = await fetch("/api/chat", {
-
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-
-                model: "llama-3.3-70b-versatile",
-
-                messages: conversation,
-
-                temperature: 0.8
-
-            })
-
-        });
-
-        if (!response.ok) {
-            throw new Error("HTTP " + response.status);
-        }
-
-        const data = await response.json();
-
-        thinking.remove();
-
-        if (data.error) {
-
-            addMessage(
-                "⚠️ " + data.error.message,
-                "bot"
-            );
-
-            return;
-        }
-
-        const reply = data.choices[0].message.content;
-
-        conversation.push({
-    role: "assistant",
-    content: reply
-});
-
-const currentChat = chats.find(c => c.id === currentChatId);
-
-if (currentChat) {
-
-    currentChat.messages = conversation;
-
-    saveChats();
-    renderHistory();
-
-}
-
-addMessage(reply, "bot");
-
-    } catch (error) {
-
-        thinking.remove();
-
-        addMessage(
-            "⚠️ Connection Error: " + error.message,
-            "bot"
-        );
-
-        console.error(error);
-
-    }
-
-}
-function addMessage(text, sender) {
-
-    const msg = document.createElement("div");
-
-    msg.className = "message " + sender;
-
-    msg.textContent = text;
-
-    chatWindow.appendChild(msg);
-
-    chatWindow.scrollTop = chatWindow.scrollHeight;
-
-    return msg;
-}
-
-function newChat() {
-
-    const confirmClear = confirm(
-        "You fuckin sure bruh?"
-    );
-
-    if (!confirmClear) return;
-
-    conversation = [SYSTEM_PROMPT];
-
-    localStorage.removeItem(STORAGE_KEY);
-
-    chatWindow.innerHTML = "";
-
-    if (welcomeScreen) {
-        welcomeScreen.style.display = "block";
-        chatWindow.appendChild(welcomeScreen);
-    }
-
-    prompt.value = "";
-    autoResize();
-}
-
-/* ==========================
-   Voice Input
-========================== */
-
-const SpeechRecognition =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
-
-if (SpeechRecognition && micBtn) {
-
-    const recognition = new SpeechRecognition();
-
-    recognition.lang = "en-US";
-    recognition.continuous = false;
-    recognition.interimResults = true;
-    recognition.maxAlternatives = 1;
-
-    let listening = false;
-
-    micBtn.addEventListener("click", () => {
-
-        if (listening) {
-            recognition.stop();
-            return;
-        }
-
-        recognition.start();
-
-    });
-
-    recognition.onstart = () => {
-
-        listening = true;
-
-        micBtn.textContent = "🔴";
-
-        micBtn.style.background = "#c62828";
-
-    };
-
-    recognition.onresult = (event) => {
-
-        let transcript = "";
-
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-            transcript += event.results[i][0].transcript;
-        }
-
-        prompt.value = transcript;
-
-        autoResize();
-
-    };
-
-    recognition.onend = () => {
-
-        listening = false;
-
-        micBtn.textContent = "🎙️";
-
-        micBtn.style.background = "";
-
-    };
-
-    recognition.onerror = () => {
-
-        listening = false;
-
-        micBtn.textContent = "🎙️";
-
-        micBtn.style.background = "";
-
-        addMessage(
-            "⚠️ Voice recognition fuckin' up.",
-            "bot"
-        );
-
-    };
-
-} else if (micBtn) {
-
-    micBtn.addEventListener("click", () => {
-
-        addMessage(
-            "⚠️ Your browser dont support this microphone bullshit.",
-            "bot"
-        );
-
-    });
-
-}
-
-/* ==========================
-   Startup
-========================== */
-
-chatWindow.scrollTop = chatWindow.scrollHeight;
 
 autoResize();
 
-console.log("Ask Brice loaded successfully.");
+if (sendBtn)
+    sendBtn.addEventListener("click", sendMessage);
 
-/* ==========================
-   Sidebar Toggle
-========================== */
+if (prompt) {
 
-const sidebar = document.getElementById("sidebar");
-const menuBtn = document.getElementById("menuBtn");
+    prompt.addEventListener("keydown", e => {
 
-if (sidebar && menuBtn) {
+        if (e.key === "Enter" && !e.shiftKey) {
 
-    menuBtn.addEventListener("click", (e) => {
+            e.preventDefault();
 
-        e.stopPropagation();
+            sendMessage();
 
-        sidebar.classList.toggle("open");
-
-    });
-
-    document.addEventListener("click", (e) => {
-
-        if (
-            sidebar.classList.contains("open") &&
-            !sidebar.contains(e.target) &&
-            e.target !== menuBtn
-        ) {
-            sidebar.classList.remove("open");
         }
 
     });
 
+    prompt.addEventListener("input", autoResize);
+
 }
 
-if (menuBtn && sidebar) {
+if (menuBtn) {
 
     menuBtn.addEventListener("click", () => {
 
@@ -396,9 +77,37 @@ if (menuBtn && sidebar) {
 
 }
 
-/* ==========================
-   Multi Chat History
-========================== */
+if (newChatBtn) {
+
+    newChatBtn.addEventListener("click", createChat);
+
+}
+/* ==========================================
+   CHAT MANAGEMENT
+========================================== */
+
+function createChat() {
+
+    currentChat = {
+        id: Date.now().toString(),
+        title: "New Bullshit",
+        messages: [SYSTEM_PROMPT]
+    };
+
+    chats.unshift(currentChat);
+
+    saveChats();
+
+    renderHistory();
+
+    chatWindow.innerHTML = "";
+
+    if (welcomeScreen) {
+        welcomeScreen.style.display = "block";
+        chatWindow.appendChild(welcomeScreen);
+    }
+
+}
 
 function loadChats() {
 
@@ -420,15 +129,15 @@ function loadChats() {
 
     if (chats.length === 0) {
 
-        createNewChat();
+        createChat();
 
-    } else {
-
-        loadChat(chats[0].id);
+        return;
 
     }
 
-    renderHistory();
+    currentChat = chats[0];
+
+    openChat(currentChat.id);
 
 }
 
@@ -441,33 +150,7 @@ function saveChats() {
 
 }
 
-function createNewChat() {
-
-    const chat = {
-
-        id: Date.now().toString(),
-
-        title: "New Bullshit",
-
-        messages: [SYSTEM_PROMPT]
-
-    };
-
-    chats.unshift(chat);
-
-    currentChatId = chat.id;
-
-    conversation = chat.messages;
-
-    saveChats();
-
-    renderHistory();
-
-}
-
 function renderHistory() {
-
-    const historyList = document.getElementById("historyList");
 
     historyList.innerHTML = "";
 
@@ -477,13 +160,13 @@ function renderHistory() {
 
         item.className = "historyItem";
 
-        if (chat.id === currentChatId) {
+        if (currentChat && chat.id === currentChat.id) {
             item.classList.add("active");
         }
 
         item.textContent = chat.title;
 
-        item.onclick = () => loadChat(chat.id);
+        item.onclick = () => openChat(chat.id);
 
         historyList.appendChild(item);
 
@@ -491,36 +174,28 @@ function renderHistory() {
 
 }
 
-function loadChat(id) {
+function openChat(id) {
 
     const chat = chats.find(c => c.id === id);
 
     if (!chat) return;
 
-    currentChatId = id;
-
-    conversation = chat.messages;
+    currentChat = chat;
 
     chatWindow.innerHTML = "";
 
     if (welcomeScreen) {
-
         welcomeScreen.style.display = "none";
-
     }
 
-    conversation.forEach(msg => {
+    chat.messages.forEach(msg => {
 
         if (msg.role === "user") {
-
             addMessage(msg.content, "user");
-
         }
 
         if (msg.role === "assistant") {
-
             addMessage(msg.content, "bot");
-
         }
 
     });
@@ -528,3 +203,229 @@ function loadChat(id) {
     renderHistory();
 
 }
+
+function autoResize() {
+
+    prompt.style.height = "auto";
+
+    prompt.style.height = prompt.scrollHeight + "px";
+
+}
+/* ==========================================
+   MESSAGES
+========================================== */
+
+async function sendMessage() {
+
+    const text = prompt.value.trim();
+
+    if (!text) return;
+
+    if (!currentChat) {
+        createChat();
+    }
+
+    if (welcomeScreen) {
+        welcomeScreen.style.display = "none";
+    }
+
+    addMessage(text, "user");
+
+    currentChat.messages.push({
+        role: "user",
+        content: text
+    });
+
+    if (currentChat.title === "New Bullshit") {
+        currentChat.title = text.substring(0, 30);
+    }
+
+    renderHistory();
+    saveChats();
+
+    prompt.value = "";
+    autoResize();
+
+    const thinking = addMessage("🧠 Thinking...", "bot");
+
+    try {
+
+        const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                model: "llama-3.3-70b-versatile",
+                messages: currentChat.messages,
+                temperature: 0.8
+            })
+        });
+
+        thinking.remove();
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        const reply = data.choices?.[0]?.message?.content ||
+            "Well... something got fucked up.";
+
+        currentChat.messages.push({
+            role: "assistant",
+            content: reply
+        });
+
+        addMessage(reply, "bot");
+
+        saveChats();
+        renderHistory();
+
+    } catch (err) {
+
+        thinking.remove();
+
+        addMessage(
+            `⚠️ Connection Error: ${err.message}`,
+            "bot"
+        );
+
+        console.error(err);
+
+    }
+
+}
+
+function addMessage(text, sender) {
+
+    const div = document.createElement("div");
+
+    div.className = `message ${sender}`;
+
+    div.textContent = text;
+
+    chatWindow.appendChild(div);
+
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+
+    return div;
+
+}
+/* ==========================================
+   VOICE INPUT
+========================================== */
+
+const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+if (SpeechRecognition && micBtn) {
+
+    const recognition = new SpeechRecognition();
+
+    recognition.lang = "en-US";
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+
+    let listening = false;
+
+    micBtn.addEventListener("click", () => {
+
+        if (listening) {
+            recognition.stop();
+        } else {
+            recognition.start();
+        }
+
+    });
+
+    recognition.onstart = () => {
+
+        listening = true;
+
+        micBtn.classList.add("listening");
+
+    };
+
+    recognition.onresult = (event) => {
+
+        let transcript = "";
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            transcript += event.results[i][0].transcript;
+        }
+
+        prompt.value = transcript;
+
+        autoResize();
+
+    };
+
+    recognition.onend = () => {
+
+        listening = false;
+
+        micBtn.classList.remove("listening");
+
+    };
+
+    recognition.onerror = () => {
+
+        listening = false;
+
+        micBtn.classList.remove("listening");
+
+        addMessage(
+            "⚠️ Voice recognition failed.",
+            "bot"
+        );
+
+    };
+
+}
+/* ==========================================
+   SIDEBAR
+========================================== */
+
+if (sidebar && menuBtn) {
+
+    menuBtn.addEventListener("click", (e) => {
+
+        e.stopPropagation();
+
+        sidebar.classList.toggle("open");
+
+    });
+
+    document.addEventListener("click", (e) => {
+
+        if (
+            sidebar.classList.contains("open") &&
+            !sidebar.contains(e.target) &&
+            !menuBtn.contains(e.target)
+        ) {
+            sidebar.classList.remove("open");
+        }
+
+    });
+
+}
+
+/* ==========================================
+   FINISH STARTUP
+========================================== */
+
+window.addEventListener("load", () => {
+
+    autoResize();
+
+    if (chatWindow) {
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    console.log("🧠 Ask Brice loaded.");
+
+});
