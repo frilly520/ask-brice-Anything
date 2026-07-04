@@ -117,11 +117,24 @@ async function sendMessage() {
     addMessage(text, "user");
 
     conversation.push({
-        role: "user",
-        content: text
-    });
+    role: "user",
+    content: text
+});
 
-    saveConversation();
+const currentChat = chats.find(c => c.id === currentChatId);
+
+if (currentChat) {
+
+    currentChat.messages = conversation;
+
+    if (currentChat.title === "New Bullshit") {
+        currentChat.title = text.substring(0, 30);
+    }
+
+    saveChats();
+    renderHistory();
+
+}
 
     prompt.value = "";
     autoResize();
@@ -171,16 +184,22 @@ async function sendMessage() {
         const reply = data.choices[0].message.content;
 
         conversation.push({
+    role: "assistant",
+    content: reply
+});
 
-            role: "assistant",
+const currentChat = chats.find(c => c.id === currentChatId);
 
-            content: reply
+if (currentChat) {
 
-        });
+    currentChat.messages = conversation;
 
-        saveConversation();
+    saveChats();
+    renderHistory();
 
-        addMessage(reply, "bot");
+}
+
+addMessage(reply, "bot");
 
     } catch (error) {
 
@@ -214,7 +233,7 @@ function addMessage(text, sender) {
 function newChat() {
 
     const confirmClear = confirm(
-        "Start a new chat? Your current conversation will be cleared."
+        "You fuckin sure bruh?"
     );
 
     if (!confirmClear) return;
@@ -307,7 +326,7 @@ if (SpeechRecognition && micBtn) {
         micBtn.style.background = "";
 
         addMessage(
-            "⚠️ Voice recognition failed.",
+            "⚠️ Voice recognition fuckin' up.",
             "bot"
         );
 
@@ -318,7 +337,7 @@ if (SpeechRecognition && micBtn) {
     micBtn.addEventListener("click", () => {
 
         addMessage(
-            "⚠️ Your browser doesn't support voice recognition.",
+            "⚠️ Your browser dont support this microphone bullshit.",
             "bot"
         );
 
