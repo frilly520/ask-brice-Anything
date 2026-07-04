@@ -40,18 +40,21 @@ let currentChat = null;
 
 /* ==========================================
    STARTUP
+================================/* ==========================================
+   STARTUP
 ========================================== */
 
 loadChats();
 
 autoResize();
 
-if (sendBtn)
+if (sendBtn) {
     sendBtn.addEventListener("click", sendMessage);
+}
 
 if (prompt) {
 
-    prompt.addEventListener("keydown", e => {
+    prompt.addEventListener("keydown", (e) => {
 
         if (e.key === "Enter" && !e.shiftKey) {
 
@@ -64,16 +67,6 @@ if (prompt) {
     });
 
     prompt.addEventListener("input", autoResize);
-
-}
-
-if (menuBtn) {
-
-    menuBtn.addEventListener("click", () => {
-
-        sidebar.classList.toggle("open");
-
-    });
 
 }
 
