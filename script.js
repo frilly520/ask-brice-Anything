@@ -362,6 +362,30 @@ console.log("Ask Brice loaded successfully.");
 const sidebar = document.getElementById("sidebar");
 const menuBtn = document.getElementById("menuBtn");
 
+if (sidebar && menuBtn) {
+
+    menuBtn.addEventListener("click", (e) => {
+
+        e.stopPropagation();
+
+        sidebar.classList.toggle("open");
+
+    });
+
+    document.addEventListener("click", (e) => {
+
+        if (
+            sidebar.classList.contains("open") &&
+            !sidebar.contains(e.target) &&
+            e.target !== menuBtn
+        ) {
+            sidebar.classList.remove("open");
+        }
+
+    });
+
+}
+
 if (menuBtn && sidebar) {
 
     menuBtn.addEventListener("click", () => {
