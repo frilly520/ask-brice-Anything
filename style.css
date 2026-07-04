@@ -69,24 +69,30 @@ body{
     background:#2f2f2f;
     transform:scale(1.08);
 }
-/* ===========================
-/* ===========================
+/* ==========================================
    SIDEBAR
-=========================== */
+========================================== */
 
 .sidebar{
     position:fixed;
     top:0;
-    left:-300px;
-    width:300px;
+    left:-320px;
+    width:320px;
     max-width:80vw;
-    height:100%;
+    height:100vh;
+
     background:#101010;
     border-right:1px solid rgba(255,255,255,.08);
-    transition:left .3s ease;
-    z-index:1000;
+
     padding:24px;
+
     overflow-y:auto;
+
+    z-index:1000;
+
+    transition:left .3s ease;
+
+    box-shadow:8px 0 30px rgba(0,0,0,.45);
 }
 
 .sidebar.open{
