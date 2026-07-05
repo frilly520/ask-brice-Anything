@@ -22,7 +22,9 @@
 
 <body>
 
-<!-- Sidebar -->
+<!-- ==========================
+     SIDEBAR
+========================== -->
 
 <aside id="sidebar" class="sidebar">
 
@@ -31,9 +33,7 @@
         <h2>Past Bullshit</h2>
 
         <button id="newChatBtn" class="newChatBtn">
-
             + New Chat
-
         </button>
 
     </div>
@@ -42,81 +42,104 @@
 
 </aside>
 
-<!-- Header -->
+<!-- ==========================
+     HEADER
+========================== -->
 
 <header class="header">
 
     <button id="menuBtn" class="iconButton">
-
         ☰
-
     </button>
 
     <div class="logo">
-
         <span class="brainEmoji">🧠</span>
-
         <span>Ask Brice</span>
-
     </div>
 
 </header>
 
-<!-- Chat -->
+<!-- ==========================
+     CHAT WINDOW
+========================== -->
 
 <main id="chatWindow" class="chatWindow">
 
-<!-- ==========================
-     WELCOME SCREEN
-========================== -->
+    <section id="welcomeScreen">
 
-<section id="welcomeScreen">
+        <h1>
+            WHAT THE FUCK<br>
+            DO YOU WANT?
+        </h1>
 
-    <h1>
+        <p class="welcomeScript">
+            Ask me anything…
+        </p>
 
-        WHAT THE FUCK<br>
-        DO YOU WANT?
+        <p class="subtitle">
+            I'll figure that shit out.
+        </p>
 
-    </h1>
-
-    <p class="welcomeScript">
-
-        Ask me anything…
-
-    </p>
-
-    <p class="subtitle">
-
-        I'll figure that shit out.
-
-    </p>
-
-</section>
+    </section>
 
 </main>
 
+<!-- ==========================
+     INPUT BAR
+========================== -->
+
 <footer class="bottomBar">
 
-<button id="micBtn" class="circleButton">
+    <!-- Hidden image picker -->
+    <input
+        type="file"
+        id="imageInput"
+        accept="image/*"
+        hidden>
 
-🎙️
+    <!-- Image upload -->
+    <button
+        id="imageBtn"
+        class="circleButton"
+        title="Upload Photo">
 
-</button>
+        📷
 
-<textarea
-id="prompt"
-rows="1"
-placeholder="Ask Brice anything..."
-autocomplete="off"
-spellcheck="true"></textarea>
+    </button>
 
-<button id="sendBtn" class="circleButton">
+    <!-- Voice -->
+    <button
+        id="micBtn"
+        class="circleButton"
+        title="Voice">
 
-🧠
+        🎙️
 
-</button>
+    </button>
+
+    <!-- Prompt -->
+    <textarea
+        id="prompt"
+        rows="1"
+        placeholder="Ask Brice anything..."
+        autocomplete="off"
+        spellcheck="true"></textarea>
+
+    <!-- Send -->
+    <button
+        id="sendBtn"
+        class="circleButton"
+        title="Send">
+
+        🧠
+
+    </button>
 
 </footer>
+
+<!-- ==========================
+     JAVASCRIPT
+========================== -->
 
 <script src="script.js"></script>
 
@@ -124,11 +147,11 @@ spellcheck="true"></textarea>
 
 if ("serviceWorker" in navigator) {
 
-window.addEventListener("load", () => {
+    window.addEventListener("load", () => {
 
-navigator.serviceWorker.register("sw.js");
+        navigator.serviceWorker.register("sw.js");
 
-});
+    });
 
 }
 

@@ -4,6 +4,8 @@
 
 const sendBtn = document.getElementById("sendBtn");
 const micBtn = document.getElementById("micBtn");
+const imageBtn = document.getElementById("imageBtn");
+const imageInput = document.getElementById("imageInput");
 const menuBtn = document.getElementById("menuBtn");
 const newChatBtn = document.getElementById("newChatBtn");
 
@@ -15,6 +17,10 @@ const sidebar = document.getElementById("sidebar");
 const historyList = document.getElementById("historyList");
 
 const STORAGE_KEY = "askBriceChats";
+
+let chats = [];
+let currentChat = null;
+let selectedImage = null;
 
 const SYSTEM_PROMPT = {
     role: "system",
@@ -35,24 +41,21 @@ Explain things simply.
 Never sound robotic.`
 };
 
-let chats = [];
-let currentChat = null;
-
 /* ==========================================
-   STARTUP
-================================/* ==========================================
    STARTUP
 ========================================== */
 
 loadChats();
-
-autoResize();
 
 if (sendBtn) {
     sendBtn.addEventListener("click", sendMessage);
 }
 
 if (prompt) {
+
+    autoResize();
+
+    prompt.addEventListener("input", autoResize);
 
     prompt.addEventListener("keydown", (e) => {
 
@@ -66,8 +69,6 @@ if (prompt) {
 
     });
 
-    prompt.addEventListener("input", autoResize);
-
 }
 
 if (newChatBtn) {
@@ -75,6 +76,44 @@ if (newChatBtn) {
     newChatBtn.addEventListener("click", createChat);
 
 }
+
+if (imageBtn && imageInput) {
+
+    imageBtn.addEventListener("click", () => {
+
+        imageInput.click();
+
+    });
+
+    imageInput.addEventListener("change", (e) => {
+
+        const file = e.target.files[0];
+
+        if (!file) return;
+
+        const reader = new FileReader();
+
+        reader.onload = () => {
+
+            selectedImage = reader.result;
+
+            const img = document.createElement("img");
+
+            img.src = selectedImage;
+            img.className = "uploadedImage";
+
+            chatWindow.appendChild(img);
+
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+
+        };
+
+        reader.readAsDataURL(file);
+
+    });
+
+}
+
 /* ==========================================
    CHAT MANAGEMENT
 ========================================== */
@@ -96,8 +135,11 @@ function createChat() {
     chatWindow.innerHTML = "";
 
     if (welcomeScreen) {
+
         welcomeScreen.style.display = "block";
+
         chatWindow.appendChild(welcomeScreen);
+
     }
 
 }
@@ -154,7 +196,9 @@ function renderHistory() {
         item.className = "historyItem";
 
         if (currentChat && chat.id === currentChat.id) {
+
             item.classList.add("active");
+
         }
 
         item.textContent = chat.title;
@@ -178,17 +222,23 @@ function openChat(id) {
     chatWindow.innerHTML = "";
 
     if (welcomeScreen) {
+
         welcomeScreen.style.display = "none";
+
     }
 
     chat.messages.forEach(msg => {
 
         if (msg.role === "user") {
+
             addMessage(msg.content, "user");
+
         }
 
         if (msg.role === "assistant") {
+
             addMessage(msg.content, "bot");
+
         }
 
     });
@@ -204,6 +254,7 @@ function autoResize() {
     prompt.style.height = prompt.scrollHeight + "px";
 
 }
+
 /* ==========================================
    MESSAGES
 ========================================== */
@@ -212,7 +263,7 @@ async function sendMessage() {
 
     const text = prompt.value.trim();
 
-    if (!text) return;
+    if (!text && !selectedImage) return;
 
     if (!currentChat) {
         createChat();
@@ -222,19 +273,49 @@ async function sendMessage() {
         welcomeScreen.style.display = "none";
     }
 
-    addMessage(text, "user");
+    // Show user's text message
+    if (text) {
+        addMessage(text, "user");
+    }
 
-    currentChat.messages.push({
-        role: "user",
-        content: text
-    });
+    // Build the message for Groq
+    let userMessage;
 
-    if (currentChat.title === "New Bullshit") {
+    if (selectedImage) {
+
+        userMessage = {
+            role: "user",
+            content: [
+                {
+                    type: "text",
+                    text: text || "Describe this image."
+                },
+                {
+                    type: "image_url",
+                    image_url: {
+                        url: selectedImage
+                    }
+                }
+            ]
+        };
+
+    } else {
+
+        userMessage = {
+            role: "user",
+            content: text
+        };
+
+    }
+
+    currentChat.messages.push(userMessage);
+
+    if (currentChat.title === "New Bullshit" && text) {
         currentChat.title = text.substring(0, 30);
     }
 
-    renderHistory();
     saveChats();
+    renderHistory();
 
     prompt.value = "";
     autoResize();
@@ -244,36 +325,57 @@ async function sendMessage() {
     try {
 
         const response = await fetch("/api/chat", {
+
             method: "POST",
+
             headers: {
                 "Content-Type": "application/json"
             },
+
             body: JSON.stringify({
-                model: "llama-3.3-70b-versatile",
+
+                model: "meta-llama/llama-4-scout-17b-16e-instruct",
+
                 messages: currentChat.messages,
+
                 temperature: 0.8
+
             })
+
         });
 
         thinking.remove();
 
         if (!response.ok) {
+
             throw new Error(`HTTP ${response.status}`);
+
         }
 
         const data = await response.json();
 
-        const reply = data.choices?.[0]?.message?.content ||
+        const reply =
+            data.choices?.[0]?.message?.content ||
             "Well... something got fucked up.";
 
         currentChat.messages.push({
+
             role: "assistant",
+
             content: reply
+
         });
 
         addMessage(reply, "bot");
 
+        selectedImage = null;
+
+        if (imageInput) {
+            imageInput.value = "";
+        }
+
         saveChats();
+
         renderHistory();
 
     } catch (err) {
@@ -281,7 +383,7 @@ async function sendMessage() {
         thinking.remove();
 
         addMessage(
-            `⚠️ Connection Error: ${err.message}`,
+            `⚠️ ${err.message}`,
             "bot"
         );
 
@@ -297,7 +399,15 @@ function addMessage(text, sender) {
 
     div.className = `message ${sender}`;
 
-    div.textContent = text;
+    if (typeof text === "string") {
+
+        div.textContent = text;
+
+    } else {
+
+        div.textContent = JSON.stringify(text);
+
+    }
 
     chatWindow.appendChild(div);
 
@@ -306,6 +416,7 @@ function addMessage(text, sender) {
     return div;
 
 }
+
 /* ==========================================
    VOICE INPUT
 ========================================== */
@@ -328,9 +439,13 @@ if (SpeechRecognition && micBtn) {
     micBtn.addEventListener("click", () => {
 
         if (listening) {
+
             recognition.stop();
+
         } else {
+
             recognition.start();
+
         }
 
     });
@@ -348,7 +463,9 @@ if (SpeechRecognition && micBtn) {
         let transcript = "";
 
         for (let i = event.resultIndex; i < event.results.length; i++) {
+
             transcript += event.results[i][0].transcript;
+
         }
 
         prompt.value = transcript;
@@ -371,14 +488,12 @@ if (SpeechRecognition && micBtn) {
 
         micBtn.classList.remove("listening");
 
-        addMessage(
-            "⚠️ Voice recognition failed.",
-            "bot"
-        );
+        addMessage("⚠️ Voice recognition failed.", "bot");
 
     };
 
 }
+
 /* ==========================================
    SIDEBAR
 ========================================== */
@@ -400,7 +515,9 @@ if (sidebar && menuBtn) {
             !sidebar.contains(e.target) &&
             !menuBtn.contains(e.target)
         ) {
+
             sidebar.classList.remove("open");
+
         }
 
     });
@@ -416,7 +533,9 @@ window.addEventListener("load", () => {
     autoResize();
 
     if (chatWindow) {
+
         chatWindow.scrollTop = chatWindow.scrollHeight;
+
     }
 
     console.log("🧠 Ask Brice loaded.");
