@@ -288,7 +288,10 @@ async function sendMessage() {
             content: [
                 {
                     type: "text",
-                    text: text || "Describe this image."
+                    text: `Look at the attached image carefully. Answer the user's question directly and identify any people, characters, objects, or text in the image.
+
+User question:
+${text || "Describe this image."}`
                 },
                 {
                     type: "image_url",
@@ -334,7 +337,7 @@ async function sendMessage() {
 
             body: JSON.stringify({
 
-                model: "meta-llama/llama-4-scout-17b-16e-instruct",
+                model: "openai/gpt-oss-120b",
 
                 messages: currentChat.messages,
 
