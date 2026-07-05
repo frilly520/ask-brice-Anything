@@ -1,13 +1,15 @@
-const CACHE_NAME = "ask-brice-v1";
+const CACHE_NAME = "ask-brice-v2";
 
 const FILES = [
-  "./",
-  "./index.html",
-  "./style.css",
-  "./script.js",
-  "./manifest.json",
-  "./brain.svg",
-  "./mic.svg"
+  "/",
+  "/index.html",
+  "/style.css",
+  "/script.js",
+  "/manifest.json",
+  "/icons/icon-192.png",
+  "/icons/icon-512.png",
+  "/brain.svg",
+  "/mic.svg"
 ];
 
 self.addEventListener("install", (event) => {

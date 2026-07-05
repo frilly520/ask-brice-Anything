@@ -1,9 +1,9 @@
 {
   "name": "Ask Brice",
   "short_name": "Ask Brice",
-  "description": "Your personal AI assistant",
-  "start_url": "./index.html",
-  "scope": "./",
+  "description": "Your brutally honest AI friend.",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#000000",

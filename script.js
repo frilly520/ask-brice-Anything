@@ -22,21 +22,76 @@ let chats = [];
 let currentChat = null;
 let selectedImage = null;
 
+/* ==========================================
+   RANDOM PLACEHOLDERS
+========================================== */
+
+const placeholders = [
+    "Alright... what the hell's on your mind?",
+    "Hit me with it.",
+    "What's your bullshit today?",
+    "Talk to me.",
+    "Let's hear it.",
+    "What's broken now?",
+    "Need advice or just wanna bullshit?",
+    "Well? I'm waiting.",
+    "Give me something interesting."
+];
+
+function setRandomPlaceholder() {
+
+    if (!prompt) return;
+
+    const random =
+        placeholders[Math.floor(Math.random() * placeholders.length)];
+
+    prompt.placeholder = random;
+
+}
+const thinkingMessages = [
+    "Rolling my eyes...",
+    "Thinking...",
+    "Trying to care...",
+    "Hold your damn horses...",
+    "Pretending this is a good question...",
+    "One sec...",
+    "Trying not to judge you...",
+    "Processing your bullshit...",
+    "Using my giant AI brain...",
+    "Figuring out how to say this nicely..."
+];
+
+function getThinkingMessage() {
+    return thinkingMessages[
+        Math.floor(Math.random() * thinkingMessages.length)
+    ];
+}
+
+/* ==========================================
+   SYSTEM PROMPT
+========================================== */
+
 const SYSTEM_PROMPT = {
     role: "system",
     content: `You are Ask Brice.
 
 Your name is Brice.
 
-You swear naturally.
+You talk like a real person.
+
+You swear naturally, but don't overdo it.
 
 You're brutally honest.
 
-Funny when appropriate.
+You're sarcastic when it fits.
 
-Never make up facts.
+You're funny when it fits.
 
-Explain things simply.
+You never make up facts.
+
+You explain things simply.
+
+If someone is struggling, drop the sarcasm and be supportive like a real friend.
 
 Never sound robotic.`
 };
@@ -47,13 +102,10 @@ Never sound robotic.`
 
 loadChats();
 
-if (sendBtn) {
-    sendBtn.addEventListener("click", sendMessage);
-}
-
 if (prompt) {
 
     autoResize();
+    setRandomPlaceholder();
 
     prompt.addEventListener("input", autoResize);
 
@@ -68,6 +120,12 @@ if (prompt) {
         }
 
     });
+
+}
+
+if (sendBtn) {
+
+    sendBtn.addEventListener("click", sendMessage);
 
 }
 
@@ -113,7 +171,6 @@ if (imageBtn && imageInput) {
     });
 
 }
-
 /* ==========================================
    CHAT MANAGEMENT
 ========================================== */
@@ -122,7 +179,7 @@ function createChat() {
 
     currentChat = {
         id: Date.now().toString(),
-        title: "New Bullshit",
+        title: "Fresh Bullshit",
         messages: [SYSTEM_PROMPT]
     };
 
@@ -141,6 +198,8 @@ function createChat() {
         chatWindow.appendChild(welcomeScreen);
 
     }
+
+    setRandomPlaceholder();
 
 }
 
@@ -174,6 +233,8 @@ function loadChats() {
 
     openChat(currentChat.id);
 
+    setRandomPlaceholder();
+
 }
 
 function saveChats() {
@@ -186,6 +247,8 @@ function saveChats() {
 }
 
 function renderHistory() {
+
+    if (!historyList) return;
 
     historyList.innerHTML = "";
 
@@ -221,7 +284,13 @@ function openChat(id) {
 
     chatWindow.innerHTML = "";
 
-    if (welcomeScreen) {
+    if (welcomeScreen && chat.messages.length === 1) {
+
+        welcomeScreen.style.display = "block";
+
+        chatWindow.appendChild(welcomeScreen);
+
+    } else if (welcomeScreen) {
 
         welcomeScreen.style.display = "none";
 
@@ -231,7 +300,21 @@ function openChat(id) {
 
         if (msg.role === "user") {
 
-            addMessage(msg.content, "user");
+            if (typeof msg.content === "string") {
+
+                addMessage(msg.content, "user");
+
+            } else if (Array.isArray(msg.content)) {
+
+                const textPart = msg.content.find(
+                    part => part.type === "text"
+                );
+
+                if (textPart) {
+                    addMessage(textPart.text, "user");
+                }
+
+            }
 
         }
 
@@ -249,46 +332,122 @@ function openChat(id) {
 
 function autoResize() {
 
+    if (!prompt) return;
+
     prompt.style.height = "auto";
 
     prompt.style.height = prompt.scrollHeight + "px";
 
 }
-
 /* ==========================================
-   MESSAGES
+   UI FUNCTIONS
 ========================================== */
 
-async function sendMessage() {
-
-    const text = prompt.value.trim();
-
-    if (!text && !selectedImage) return;
-
-    if (!currentChat) {
-        createChat();
-    }
+function addMessage(text, sender) {
 
     if (welcomeScreen) {
         welcomeScreen.style.display = "none";
     }
 
-    // Show user's text message
-    if (text) {
-        addMessage(text, "user");
+    const message = document.createElement("div");
+
+    message.className =
+        sender === "user"
+            ? "message userMessage"
+            : "message botMessage";
+
+    message.textContent = text;
+
+    chatWindow.appendChild(message);
+
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+
+    return message;
+
+}
+
+function updateMessage(element, text) {
+
+    if (!element) return;
+
+    element.textContent = text;
+
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+
+}
+
+function removeMessage(element) {
+
+    if (!element) return;
+
+    element.remove();
+
+}
+
+function scrollToBottom() {
+
+    if (!chatWindow) return;
+
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+
+}
+
+function showImagePreview(imageData) {
+
+    if (!imageData) return;
+
+    const wrapper = document.createElement("div");
+
+    wrapper.className = "message userMessage";
+
+    const img = document.createElement("img");
+
+    img.src = imageData;
+    img.className = "uploadedImage";
+
+    wrapper.appendChild(img);
+
+    chatWindow.appendChild(wrapper);
+
+    scrollToBottom();
+
+}
+
+function clearImageSelection() {
+
+    selectedImage = null;
+
+    if (imageInput) {
+        imageInput.value = "";
     }
 
-    // Build the message for Groq
+}
+/* ==========================================
+   SEND MESSAGE
+========================================== */
+
+async function sendMessage() {
+
+    if (!currentChat) {
+        createChat();
+    }
+
+    const text = prompt.value.trim();
+
+    if (!text && !selectedImage) return;
+
     let userMessage;
 
     if (selectedImage) {
+
+        showImagePreview(selectedImage);
 
         userMessage = {
             role: "user",
             content: [
                 {
                     type: "text",
-                    text: `Look at the attached image carefully. Answer the user's question directly and identify any people, characters, objects, or text in the image.
+                    text: `Look at the attached image carefully and answer the user's question directly.
 
 User question:
 ${text || "Describe this image."}`
@@ -304,6 +463,8 @@ ${text || "Describe this image."}`
 
     } else {
 
+        addMessage(text, "user");
+
         userMessage = {
             role: "user",
             content: text
@@ -313,17 +474,24 @@ ${text || "Describe this image."}`
 
     currentChat.messages.push(userMessage);
 
-    if (currentChat.title === "New Bullshit" && text) {
+    if (currentChat.title === "Fresh Bullshit" && text) {
+
         currentChat.title = text.substring(0, 30);
+
     }
 
     saveChats();
+
     renderHistory();
 
     prompt.value = "";
+
     autoResize();
 
-    const thinking = addMessage("🧠 Thinking...", "bot");
+  const thinking = addMessage(
+    getThinkingMessage(),
+    "bot"
+);
 
     try {
 
@@ -347,19 +515,26 @@ ${text || "Describe this image."}`
 
         });
 
-        thinking.remove();
-
         if (!response.ok) {
 
-            throw new Error(`HTTP ${response.status}`);
+            const error = await response.json();
+
+            throw new Error(
+                error?.error?.message ||
+                `HTTP ${response.status}`
+            );
 
         }
 
         const data = await response.json();
 
+        removeMessage(thinking);
+
         const reply =
             data.choices?.[0]?.message?.content ||
-            "Well... something got fucked up.";
+            "I don't know what the hell happened.";
+
+        addMessage(reply, "bot");
 
         currentChat.messages.push({
 
@@ -369,107 +544,44 @@ ${text || "Describe this image."}`
 
         });
 
-        addMessage(reply, "bot");
-
-        selectedImage = null;
-
-        if (imageInput) {
-            imageInput.value = "";
-        }
-
         saveChats();
-
-        renderHistory();
 
     } catch (err) {
 
-        thinking.remove();
+        removeMessage(thinking);
 
-        addMessage(
-            `⚠️ ${err.message}`,
-            "bot"
-        );
-
-        console.error(err);
+        addMessage(`⚠️ ${err.message}`, "bot");
 
     }
 
-}
-
-function addMessage(text, sender) {
-
-    const div = document.createElement("div");
-
-    div.className = `message ${sender}`;
-
-    if (typeof text === "string") {
-
-        div.textContent = text;
-
-    } else {
-
-        div.textContent = JSON.stringify(text);
-
-    }
-
-    chatWindow.appendChild(div);
-
-    chatWindow.scrollTop = chatWindow.scrollHeight;
-
-    return div;
+    clearImageSelection();
 
 }
-
 /* ==========================================
    VOICE INPUT
 ========================================== */
 
-const SpeechRecognition =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
+if ("webkitSpeechRecognition" in window) {
 
-if (SpeechRecognition && micBtn) {
+    const recognition = new webkitSpeechRecognition();
 
-    const recognition = new SpeechRecognition();
-
-    recognition.lang = "en-US";
     recognition.continuous = false;
-    recognition.interimResults = true;
-    recognition.maxAlternatives = 1;
+    recognition.interimResults = false;
+    recognition.lang = "en-US";
 
-    let listening = false;
+    if (micBtn) {
 
-    micBtn.addEventListener("click", () => {
-
-        if (listening) {
-
-            recognition.stop();
-
-        } else {
+        micBtn.addEventListener("click", () => {
 
             recognition.start();
 
-        }
+        });
 
-    });
-
-    recognition.onstart = () => {
-
-        listening = true;
-
-        micBtn.classList.add("listening");
-
-    };
+    }
 
     recognition.onresult = (event) => {
 
-        let transcript = "";
-
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-
-            transcript += event.results[i][0].transcript;
-
-        }
+        const transcript = event.results[0][0].transcript;
 
         prompt.value = transcript;
 
@@ -477,21 +589,9 @@ if (SpeechRecognition && micBtn) {
 
     };
 
-    recognition.onend = () => {
+    recognition.onerror = (event) => {
 
-        listening = false;
-
-        micBtn.classList.remove("listening");
-
-    };
-
-    recognition.onerror = () => {
-
-        listening = false;
-
-        micBtn.classList.remove("listening");
-
-        addMessage("⚠️ Voice recognition failed.", "bot");
+        console.error("Speech Recognition Error:", event.error);
 
     };
 
@@ -501,46 +601,37 @@ if (SpeechRecognition && micBtn) {
    SIDEBAR
 ========================================== */
 
-if (sidebar && menuBtn) {
+if (menuBtn && sidebar) {
 
-    menuBtn.addEventListener("click", (e) => {
-
-        e.stopPropagation();
+    menuBtn.addEventListener("click", () => {
 
         sidebar.classList.toggle("open");
-
-    });
-
-    document.addEventListener("click", (e) => {
-
-        if (
-            sidebar.classList.contains("open") &&
-            !sidebar.contains(e.target) &&
-            !menuBtn.contains(e.target)
-        ) {
-
-            sidebar.classList.remove("open");
-
-        }
 
     });
 
 }
 
 /* ==========================================
-   FINISH STARTUP
+   CLOSE SIDEBAR WHEN OPENING CHAT
 ========================================== */
 
-window.addEventListener("load", () => {
+document.addEventListener("click", (e) => {
 
-    autoResize();
+    if (
+        sidebar &&
+        sidebar.classList.contains("open") &&
+        !sidebar.contains(e.target) &&
+        e.target !== menuBtn
+    ) {
 
-    if (chatWindow) {
-
-        chatWindow.scrollTop = chatWindow.scrollHeight;
+        sidebar.classList.remove("open");
 
     }
 
-    console.log("🧠 Ask Brice loaded.");
-
 });
+
+/* ==========================================
+   FINISH SETUP
+========================================== */
+
+// Initialization is already handled at the top of the file.
