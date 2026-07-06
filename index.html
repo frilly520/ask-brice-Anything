@@ -3,28 +3,27 @@
 
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Ask Brice</title>
+    <title>Ask Brice</title>
 
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#000000">
+    <meta name="theme-color" content="#000000">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="manifest" href="manifest.json">
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Permanent+Marker&family=Rubik+Dirt&family=Caveat:wght@700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Permanent+Marker&family=Rubik+Dirt&family=Caveat:wght@700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
 
 </head>
 
 <body>
 
-<!-- ==========================
-     SIDEBAR
-========================== -->
+<!-- Sidebar -->
 
 <aside id="sidebar" class="sidebar">
 
@@ -32,7 +31,9 @@
 
         <h2>Past Bullshit</h2>
 
-        <button id="newChatBtn">+ Start Bullshittin'</button>
+        <button id="newChatBtn" class="newChatBtn">
+            + New Chat
+        </button>
 
     </div>
 
@@ -40,9 +41,7 @@
 
 </aside>
 
-<!-- ==========================
-     HEADER
-========================== -->
+<!-- Header -->
 
 <header class="header">
 
@@ -51,27 +50,30 @@
     </button>
 
     <div class="logo">
+
         <span class="brainEmoji">🧠</span>
+
         <span>Ask Brice</span>
+
     </div>
 
 </header>
 
-<!-- ==========================
-     CHAT WINDOW
-========================== -->
+<!-- Chat -->
 
 <main id="chatWindow" class="chatWindow">
 
     <section id="welcomeScreen">
 
         <h1>
+
             WHAT THE FUCK<br>
             DO YOU WANT?
+
         </h1>
 
         <p class="welcomeScript">
-            Ask me anything…
+            Ask me anything...
         </p>
 
         <p class="subtitle">
@@ -82,30 +84,25 @@
 
 </main>
 
-<!-- ==========================
-     INPUT BAR
-========================== -->
+<!-- Bottom Bar -->
 
 <footer class="bottomBar">
 
-    <!-- Hidden image picker -->
     <input
         type="file"
         id="imageInput"
         accept="image/*"
         hidden>
 
-    <!-- Image upload -->
     <button
         id="imageBtn"
         class="circleButton"
-        title="Upload Photo">
+        title="Upload">
 
         📷
 
     </button>
 
-    <!-- Voice -->
     <button
         id="micBtn"
         class="circleButton"
@@ -115,7 +112,6 @@
 
     </button>
 
-    <!-- Prompt -->
     <textarea
         id="prompt"
         rows="1"
@@ -123,7 +119,6 @@
         autocomplete="off"
         spellcheck="true"></textarea>
 
-    <!-- Send -->
     <button
         id="sendBtn"
         class="circleButton"
@@ -135,10 +130,6 @@
 
 </footer>
 
-<!-- ==========================
-     JAVASCRIPT
-========================== -->
-
 <script src="script.js"></script>
 
 <script>
@@ -147,7 +138,8 @@ if ("serviceWorker" in navigator) {
 
     window.addEventListener("load", () => {
 
-        navigator.serviceWorker.register("sw.js");
+        navigator.serviceWorker.register("./sw.js")
+            .catch(console.error);
 
     });
 
