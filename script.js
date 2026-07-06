@@ -183,11 +183,8 @@ function createChat() {
         messages: [SYSTEM_PROMPT]
     };
 
-    chats.unshift(currentChat);
-
-    saveChats();
-
-    renderHistory();
+    // Don't save the chat yet.
+    // Wait until the first message is sent.
 
     chatWindow.innerHTML = "";
 
@@ -198,6 +195,8 @@ function createChat() {
         chatWindow.appendChild(welcomeScreen);
 
     }
+
+    renderHistory();
 
     setRandomPlaceholder();
 
@@ -221,19 +220,9 @@ function loadChats() {
 
     }
 
-    if (chats.length === 0) {
+    renderHistory();
 
-        createChat();
-
-        return;
-
-    }
-
-    currentChat = chats[0];
-
-    openChat(currentChat.id);
-
-    setRandomPlaceholder();
+    createChat();
 
 }
 
@@ -311,7 +300,9 @@ function openChat(id) {
                 );
 
                 if (textPart) {
+
                     addMessage(textPart.text, "user");
+
                 }
 
             }
@@ -472,7 +463,14 @@ ${text || "Describe this image."}`
 
     }
 
-    currentChat.messages.push(userMessage);
+    // Save this chat only after the first message.
+if (!chats.some(chat => chat.id === currentChat.id)) {
+
+    chats.unshift(currentChat);
+
+}
+
+currentChat.messages.push(userMessage);
 
     if (currentChat.title === "Fresh Bullshit" && text) {
 

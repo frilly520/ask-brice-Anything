@@ -291,38 +291,52 @@ body{
 .bottomBar{
     position:fixed;
     left:50%;
-    bottom:18px;
+    bottom:20px;
     transform:translateX(-50%);
-    width:94%;
-    max-width:920px;
+
+    width:95%;
+    max-width:980px;
+
     display:flex;
     align-items:flex-end;
-    gap:12px;
-    padding:12px;
-    border-radius:24px;
-    background:rgba(22,22,22,.88);
-    backdrop-filter:blur(18px);
+    gap:18px;
+
+    padding:18px 20px;
+
+    border-radius:32px;
+
+    background:rgba(22,22,22,.94);
+    backdrop-filter:blur(24px);
+
     border:1px solid rgba(255,255,255,.08);
-    box-shadow:0 12px 40px rgba(0,0,0,.35);
+
+    box-shadow:0 18px 50px rgba(0,0,0,.45);
 }
 
 .circleButton{
-    width:52px;
-    height:52px;
+    width:56px;
+    height:56px;
+
+    flex-shrink:0;
+
     border:none;
     border-radius:50%;
+
     background:#242424;
     color:#fff;
+
     display:flex;
-    justify-content:center;
     align-items:center;
+    justify-content:center;
+
     font-size:24px;
+
     cursor:pointer;
     transition:.2s;
 }
 
 .circleButton:hover{
-    background:#333;
+    background:#353535;
     transform:scale(1.08);
 }
 
@@ -332,20 +346,38 @@ body{
 
 #prompt{
     flex:1;
-    background:none;
+
+    background:#121212;
+
     border:none;
+    border-radius:22px;
+
     outline:none;
     resize:none;
+
     color:#fff;
+
     font-family:"Inter",sans-serif;
-    font-size:17px;
-    line-height:1.6;
-    max-height:170px;
-    padding:12px 4px;
+    font-size:18px;
+    line-height:1.8;
+
+    min-height:70px;
+    max-height:220px;
+
+    padding:22px 24px;
+
+    overflow-y:auto;
+
+    transition:.2s;
+}
+
+#prompt:focus{
+    background:#181818;
+    box-shadow:0 0 0 2px rgba(59,130,246,.35);
 }
 
 #prompt::placeholder{
-    color:#777;
+    color:#888;
 }
 
 /* ==========================================
