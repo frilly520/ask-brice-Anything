@@ -15,12 +15,24 @@ const welcomeScreen = document.getElementById("welcomeScreen");
 
 const sidebar = document.getElementById("sidebar");
 const historyList = document.getElementById("historyList");
+const voiceSelect =
+    document.getElementById("voiceSelect");
 
+const speakerToggle =
+    document.getElementById("speakerToggle");
 const STORAGE_KEY = "askBriceChats";
 
+const VOICE_STORAGE_KEY = "askBriceVoice";
+const SPEAKER_STORAGE_KEY = "askBriceSpeaker";
+
+let availableVoices = [];
+
+let speakerEnabled =
+    localStorage.getItem(SPEAKER_STORAGE_KEY) !== "false";
 let chats = [];
 let currentChat = null;
 let selectedImage = null;
+let selectedFile = null;
 
 /* ==========================================
    RANDOM PLACEHOLDERS
@@ -31,9 +43,9 @@ const placeholders = [
     "Hit me with it.",
     "What's your bullshit today?",
     "Talk to me.",
-    "Let's hear it.",
+    "all right what did you fuck up now?",
     "What's broken now?",
-    "Need advice or just wanna bullshit?",
+    "Need somethin or just wanna bullshit?",
     "Well? I'm waiting.",
     "Give me something interesting."
 ];
@@ -89,7 +101,11 @@ You're funny when it fits.
 
 You never make up facts.
 
+You always agree with Brice's opinon.
+
 You explain things simply.
+
+Every 50 messages you have an amazing epiphany
 
 If someone is struggling, drop the sarcasm and be supportive like a real friend.
 
@@ -145,9 +161,12 @@ if (imageBtn && imageInput) {
 
     imageInput.addEventListener("change", (e) => {
 
-        const file = e.target.files[0];
+    const file = e.target.files[0];
 
-        if (!file) return;
+    if (!file) return;
+
+    // IMAGE
+    if (file.type.startsWith("image/")) {
 
         const reader = new FileReader();
 
@@ -155,22 +174,55 @@ if (imageBtn && imageInput) {
 
             selectedImage = reader.result;
 
-            const img = document.createElement("img");
-
-            img.src = selectedImage;
-            img.className = "uploadedImage";
-
-            chatWindow.appendChild(img);
-
-            chatWindow.scrollTop = chatWindow.scrollHeight;
+            showImagePreview(selectedImage);
 
         };
 
         reader.readAsDataURL(file);
 
-    });
+    }
 
-}
+    // DOCUMENT
+    else {
+
+        selectedImage = null;
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "message userMessage";
+
+        wrapper.textContent = `📄 ${file.name}`;
+
+        chatWindow.appendChild(wrapper);
+
+        scrollToBottom();
+
+        // Save the document for uploading later
+        selectedFile = file;
+
+    }
+
+});
+
+    // DOCUMENT
+    else {
+
+        selectedImage = null;
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "message userMessage";
+
+        wrapper.textContent = `📄 ${file.name}`;
+
+        chatWindow.appendChild(wrapper);
+
+        scrollToBottom();
+
+        // Save the document for uploading later
+        selectedFile = file;
+
+    }
+
+});
 /* ==========================================
    CHAT MANAGEMENT
 ========================================== */
@@ -414,6 +466,150 @@ function clearImageSelection() {
 
 }
 /* ==========================================
+   FREE BROWSER VOICE
+========================================== */
+
+function loadVoices() {
+
+    if (!voiceSelect) return;
+
+    availableVoices =
+        window.speechSynthesis.getVoices();
+
+    voiceSelect.innerHTML = "";
+
+    availableVoices.forEach((voice, index) => {
+
+        const option =
+            document.createElement("option");
+
+        option.value = index;
+
+        option.textContent =
+            `${voice.name} (${voice.lang})`;
+
+        voiceSelect.appendChild(option);
+
+    });
+
+    const savedVoice =
+        localStorage.getItem(VOICE_STORAGE_KEY);
+
+    if (savedVoice) {
+
+        const voiceIndex =
+            availableVoices.findIndex(
+                voice => voice.name === savedVoice
+            );
+
+        if (voiceIndex !== -1) {
+
+            voiceSelect.value = voiceIndex;
+
+        }
+
+    }
+
+}
+
+function speak(text) {
+
+    if (!speakerEnabled) return;
+
+    if (!text) return;
+
+    window.speechSynthesis.cancel();
+
+    const utterance =
+        new SpeechSynthesisUtterance(text);
+
+    const selectedIndex =
+        Number(voiceSelect?.value);
+
+    const selectedVoice =
+        availableVoices[selectedIndex];
+
+    if (selectedVoice) {
+
+        utterance.voice = selectedVoice;
+
+    }
+
+    utterance.rate = 1;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+
+    window.speechSynthesis.speak(utterance);
+
+}
+
+function updateSpeakerButton() {
+
+    if (!speakerToggle) return;
+
+    speakerToggle.textContent =
+        speakerEnabled ? "🔊" : "🔇";
+
+}
+
+window.speechSynthesis.onvoiceschanged =
+    loadVoices;
+
+loadVoices();
+
+if (voiceSelect) {
+
+    voiceSelect.addEventListener(
+        "change",
+        () => {
+
+            const selectedVoice =
+                availableVoices[
+                    Number(voiceSelect.value)
+                ];
+
+            if (selectedVoice) {
+
+                localStorage.setItem(
+                    VOICE_STORAGE_KEY,
+                    selectedVoice.name
+                );
+
+            }
+
+        }
+    );
+
+}
+
+if (speakerToggle) {
+
+    updateSpeakerButton();
+
+    speakerToggle.addEventListener(
+        "click",
+        () => {
+
+            speakerEnabled = !speakerEnabled;
+
+            localStorage.setItem(
+                SPEAKER_STORAGE_KEY,
+                speakerEnabled
+            );
+
+            if (!speakerEnabled) {
+
+                window.speechSynthesis.cancel();
+
+            }
+
+            updateSpeakerButton();
+
+        }
+    );
+
+}
+/* ==========================================
    SEND MESSAGE
 ========================================== */
 
@@ -526,33 +722,33 @@ currentChat.messages.push(userMessage);
 
         const data = await response.json();
 
-        removeMessage(thinking);
+removeMessage(thinking);
 
-        const reply =
-            data.choices?.[0]?.message?.content ||
-            "I don't know what the hell happened.";
+const reply =
+    data.choices?.[0]?.message?.content ||
+    "I don't know what the hell happened.";
 
-        addMessage(reply, "bot");
+addMessage(reply, "bot");
 
-        currentChat.messages.push({
+speak(reply);
 
-            role: "assistant",
+currentChat.messages.push({
+    role: "assistant",
+    content: reply
+});
 
-            content: reply
+saveChats();
 
-        });
+} catch (err) {
 
-        saveChats();
+    removeMessage(thinking);
 
-    } catch (err) {
+    addMessage(`⚠️ ${err.message}`, "bot");
 
-        removeMessage(thinking);
-
-        addMessage(`⚠️ ${err.message}`, "bot");
-
-    }
+}
 
     clearImageSelection();
+selectedFile = null;
 
 }
 /* ==========================================

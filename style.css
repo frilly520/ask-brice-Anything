@@ -110,16 +110,27 @@ body{
 
 .newChatBtn{
     width:100%;
-    padding:14px;
+    padding:18px;
+
     border:none;
-    border-radius:14px;
+    border-radius:16px;
+
     background:#242424;
     color:#fff;
-    font-size:16px;
+
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:.3px;
+
     cursor:pointer;
+
     transition:.2s;
 }
 
+.newChatBtn:hover{
+    background:#3b82f6;
+    transform:translateY(-1px);
+}
 .newChatBtn:hover{
     background:#3b82f6;
 }
@@ -505,4 +516,59 @@ body{
         font-size:16px;
     }
 
+}
+/* ==========================================
+   VOICE SETTINGS
+========================================== */
+
+.voiceSettings{
+    margin-bottom:24px;
+    padding:16px;
+    background:#181818;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:16px;
+}
+
+.voiceSettings label{
+    display:block;
+    margin-bottom:12px;
+    font-size:16px;
+    font-weight:700;
+}
+
+.voiceControls{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+#voiceSelect{
+    flex:1;
+    min-width:0;
+    padding:12px;
+    background:#242424;
+    color:#fff;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:12px;
+    font-family:"Inter",sans-serif;
+    font-size:14px;
+    outline:none;
+}
+
+.speakerToggle{
+    width:46px;
+    height:46px;
+    flex-shrink:0;
+    border:none;
+    border-radius:50%;
+    background:#242424;
+    color:#fff;
+    font-size:21px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.speakerToggle:hover{
+    background:#333;
+    transform:scale(1.06);
 }
