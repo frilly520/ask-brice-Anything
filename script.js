@@ -564,9 +564,11 @@ ${text || "Analyze this document."}
 
 function loadVoices() {
 
-    if (!voiceSelect) return;
-
     availableVoices = speechSynthesis.getVoices();
+
+    console.log("Voices:", availableVoices);
+
+    if (!voiceSelect) return;
 
     voiceSelect.innerHTML = "";
 
@@ -575,75 +577,26 @@ function loadVoices() {
         const option = document.createElement("option");
 
         option.value = index;
-        option.textContent = `${voice.name} (${voice.lang})`;
+        option.textContent = voice.name;
 
         voiceSelect.appendChild(option);
 
     });
 
-    const savedVoice = localStorage.getItem(VOICE_STORAGE_KEY);
-
-    if (savedVoice) {
-
-        const index = availableVoices.findIndex(
-            voice => voice.name === savedVoice
-        );
-
-        if (index !== -1) {
-
-            voiceSelect.value = index;
-
-        }
-
-    }
-
-}
-
-function speak(text) {
-
-    if (!speakerEnabled) return;
-    if (!text) return;
-
-    speechSynthesis.cancel();
-
-    const utterance = new SpeechSynthesisUtterance(text);
-
-    const selectedVoice =
-        availableVoices[
-            Number(voiceSelect?.value || 0)
-        ];
-
-    if (selectedVoice) {
-
-        utterance.voice = selectedVoice;
-
-    }
-
-    utterance.rate = 1;
-    utterance.pitch = 1;
-    utterance.volume = 1;
-
-    speechSynthesis.speak(utterance);
-
-}
-
-function stopSpeaking() {
-
-    speechSynthesis.cancel();
-
-}
-
-function updateSpeakerButton() {
-
-    if (!speakerToggle) return;
-
-    speakerToggle.textContent =
-        speakerEnabled ? "🔊" : "🔇";
-
 }
 
 speechSynthesis.onvoiceschanged = loadVoices;
-loadVoices();
+
+window.addEventListener("load", () => {
+
+    loadVoices();
+
+    setTimeout(loadVoices, 500);
+
+});
+setTimeout(() => {
+    console.log(availableVoices);
+}, 1000);
 
 /* ==========================================
    VOICE SELECTOR
