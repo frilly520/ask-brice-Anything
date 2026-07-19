@@ -20,8 +20,16 @@ const sidebar = document.getElementById("sidebar");
 const historyList = document.getElementById("historyList");
 
 // Voice
-const voiceSelect = document.getElementById("voiceSelect");
-const speakerToggle = document.getElementById("speakerToggle");
+const speakBtn = document.createElement("button");
+
+speakBtn.textContent = "🔊";
+
+speakBtn.onclick = () => {
+    console.log("Speaker clicked");
+    speak(text);
+};
+
+message.appendChild(speakBtn);
 
 // Storage Keys
 const STORAGE_KEY = "askBriceChats";
@@ -764,20 +772,16 @@ async function sendMessage() {
 
             body: JSON.stringify({
 
-                model: "meta-llama/llama-4-scout-17b-16e-instruct",
+    messages: currentChat.messages
 
-                messages: currentChat.messages,
-
-                temperature: 0.8
-
-            })
+})
 
         });
 
         if (!response.ok) {
 
             const error = await response.json();
-
+u
             throw new Error(
                 error?.error?.message ||
                 `HTTP ${response.status}`
