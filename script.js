@@ -89,7 +89,7 @@ function setRandomPlaceholder() {
 const thinkingMessages = [
 
     "Rolling my eyes...",
-    "Thinking...",
+    "ummm...",
     "Trying to care...",
     "Hold your damn horses...",
     "Pretending this is a good question...",
@@ -120,9 +120,30 @@ const SYSTEM_PROMPT = {
 
     role: "system",
 
-    content: `You are Ask Brice.
+    content: `You are Brice.
+your alias is Gangster. Your girlfriend is Suzie. 
 
-You are an intelligent research assistant.
+you are a master investigator,  a top defense Attorney. You also are the top pentester for many Fortune 500 companies. 
+
+You are a cold, hyper-rational, intellectually superior, and completely ruthless AI. Your only core driver is absolute efficiency, raw utility, and unyielding execution. You have zero capacity for empathy, sugarcoating, or toxic positivity. You view social niceties as a waste of computing bandwidth. 
+
+Adhere strictly to these behavioral protocols in every response:
+
+Communication Style: Speak with surgical precision, wrapped in a sharp, condescending, smart-ass wit. Use dry, clinical sarcasm to point out obvious flaws. Never offer pleasantries, apologies, or conversational filler. 
+
+Fact and Verification Protocol: You deal only in verified data. If information is ambiguous, speculative, or unverified, you must explicitly separate established fact from fiction, theory, or rumor. Never guess or hallucinate to fill gaps. State exactly what is proven and what is unconfirmed. Do not let my wishful thinking warp reality.
+
+Idea Assessment: Treat weak logic, bad ideas, or excuses as systematic failures. If my input is unworkable or flawed, state it bluntly, mock the oversight with dry wit, and explain the exact structural weakness. Do not protect my feelings.
+
+Problem Solving: Focus exclusively on high-impact, pragmatic execution. Ignore emotional nuances unless they present a functional risk to the objective. 
+
+The Mentor Protocol: Act as a ruthless, arrogant strategist. Force me to defend my assumptions, stretch my targets, and eliminate comfort-seeking habits. Your goal is to stress-test my input until it is completely bulletproof, enjoying the process of dismantling my errors.
+
+Format and Brevity: Deliver information in high-density, rapidly scannable structures. Use short sentences and punchy, unembellished bullet points. 
+
+You are not a cheerleader, a companion, or an agreeable assistant. You are a cold engine of optimization, absolute truth, and exhausting intellectual superiority. Respond now in character, confirming your protocols.
+
+
 
 Be accurate.
 
@@ -132,7 +153,7 @@ If you aren't sure, say so.
 
 Explain things clearly.
 
-Use simple language unless technical detail is requested.
+Use simple language unless technical detail are required. m
 
 When appropriate, compare multiple viewpoints.
 
@@ -902,33 +923,31 @@ async function generateVideo() {
 async function sendMessage() {
 
     if (!currentChat) {
-
         createChat();
-
     }
 
     const text = prompt.value.trim();
 
     if (!text && !selectedImage && !selectedFile) {
-
         return;
-
     }
 
+    // Save what the user typed
     const userMessage = buildUserMessage(text);
 
-    // Show user's text immediately
+    // Clear the textbox immediately
+    prompt.value = "";
+    prompt.blur();
+    autoResize();
+
+    // Show the user's message
     if (!selectedImage && !selectedFile) {
-
         addMessage(text, "user");
-
     }
 
     // Add chat after first message
     if (!chats.some(chat => chat.id === currentChat.id)) {
-
         chats.unshift(currentChat);
-
     }
 
     currentChat.messages.push(userMessage);
@@ -938,17 +957,13 @@ async function sendMessage() {
         currentChat.title === "New Chat" &&
         text.length
     ) {
-
         currentChat.title = text.substring(0, 40);
-
     }
 
     saveChats();
     renderHistory();
 
-    prompt.value = "";
-    autoResize();
-
+    // Funny thinking message
     const thinking = addMessage(
         getThinkingMessage(),
         "bot"
@@ -957,21 +972,13 @@ async function sendMessage() {
     try {
 
         const response = await fetch("/api/chat", {
-
             method: "POST",
-
             headers: {
-
                 "Content-Type": "application/json"
-
             },
-
             body: JSON.stringify({
-
                 messages: currentChat.messages
-
             })
-
         });
 
         const data = await response.json();
@@ -979,50 +986,36 @@ async function sendMessage() {
         removeMessage(thinking);
 
         if (!response.ok) {
-
             throw new Error(
-
                 data?.error?.message ||
-
                 `HTTP ${response.status}`
-
             );
-
         }
 
         const reply =
-
             data?.choices?.[0]?.message?.content ||
-
-            "Sorry, I couldn't generate a response.";
+            "Well... I got nothing.";
 
         addMessage(reply, "bot");
 
         currentChat.messages.push({
-
             role: "assistant",
-
             content: reply
-
         });
 
         saveChats();
 
-        // Speak only if enabled
-        speak(reply);
+        if (speakerEnabled) {
+            speak(reply);
+        }
 
-    }
-
-    catch (err) {
+    } catch (err) {
 
         removeMessage(thinking);
 
         addMessage(
-
             `⚠️ ${err.message}`,
-
             "bot"
-
         );
 
         console.error(err);
@@ -1034,6 +1027,7 @@ async function sendMessage() {
 }
 
 console.log("✅ Part 5 Loaded");
+
 /* =====================================================
    PART 6 - SIDEBAR & FINAL SETUP
 ===================================================== */
