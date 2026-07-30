@@ -518,7 +518,7 @@ body{
 
 }
 /* ==========================================
-   VOICE SETTINGS
+   VOICE SETTINGS + MESSAGE ACTIONS
 ========================================== */
 
 .voiceSettings{
@@ -532,8 +532,8 @@ body{
 .voiceSettings label{
     display:block;
     margin-bottom:12px;
-    font-size:16px;
-    font-weight:700;
+    font:700 16px "Inter",sans-serif;
+    color:#fff;
 }
 
 .voiceControls{
@@ -545,30 +545,79 @@ body{
 #voiceSelect{
     flex:1;
     min-width:0;
-    padding:12px;
+    height:46px;
+    padding:0 12px;
     background:#242424;
     color:#fff;
     border:1px solid rgba(255,255,255,.08);
     border-radius:12px;
-    font-family:"Inter",sans-serif;
-    font-size:14px;
+    font:500 14px "Inter",sans-serif;
     outline:none;
+}
+
+#voiceSelect:focus{
+    border-color:#4f8cff;
 }
 
 .speakerToggle{
     width:46px;
     height:46px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     flex-shrink:0;
     border:none;
-    border-radius:50%;
+    border-radius:12px;
     background:#242424;
     color:#fff;
-    font-size:21px;
+    font-size:20px;
     cursor:pointer;
     transition:.2s;
 }
 
 .speakerToggle:hover{
     background:#333;
-    transform:scale(1.06);
+}
+
+.speakerToggle:active{
+    transform:scale(.95);
+}
+
+/* ==========================================
+   MESSAGE ACTIONS
+========================================== */
+
+.messageActions{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:8px;
+}
+
+.actionBtn{
+    width:34px;
+    height:34px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:transparent;
+    border:none;
+    border-radius:8px;
+    color:#9ca3af;
+    font-size:18px;
+    cursor:pointer;
+    transition:.2s ease;
+}
+
+.actionBtn:hover{
+    background:rgba(255,255,255,.08);
+    color:#fff;
+}
+
+.actionBtn:active{
+    transform:scale(.92);
+}
+
+.botMessage .messageActions{
+    justify-content:flex-start;
 }

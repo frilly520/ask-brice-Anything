@@ -383,46 +383,64 @@ function scrollToBottom() {
 function addMessage(text, sender) {
 
     if (welcomeScreen) {
-
         welcomeScreen.style.display = "none";
-
     }
 
     const message = document.createElement("div");
-
     message.className =
-
         sender === "user"
-
             ? "message userMessage"
-
             : "message botMessage";
 
     const content = document.createElement("div");
-
     content.className = "messageContent";
-
     content.textContent = text;
 
     message.appendChild(content);
 
-    /* Speaker button only on AI replies */
-
+    // Action buttons for AI replies
     if (sender === "bot") {
 
+        const actions = document.createElement("div");
+        actions.className = "messageActions";
+
+        // 🔊 Speak
         const speakBtn = document.createElement("button");
-
-        speakBtn.className = "speakBtn";
-
+        speakBtn.className = "actionBtn";
         speakBtn.innerHTML = "🔊";
+        speakBtn.title = "Read aloud";
+        speakBtn.onclick = () => speak(text);
 
-        speakBtn.onclick = () => {
+        // 📋 Copy
+        const copyBtn = document.createElement("button");
+        copyBtn.className = "actionBtn";
+        copyBtn.innerHTML = "📋";
+        copyBtn.title = "Copy";
 
-            speak(text);
+        copyBtn.onclick = async () => {
+
+            try {
+
+                await navigator.clipboard.writeText(text);
+
+                copyBtn.innerHTML = "✅";
+
+                setTimeout(() => {
+                    copyBtn.innerHTML = "📋";
+                }, 1200);
+
+            } catch (err) {
+
+                console.error(err);
+
+            }
 
         };
 
-        message.appendChild(speakBtn);
+        actions.appendChild(speakBtn);
+        actions.appendChild(copyBtn);
+
+        message.appendChild(actions);
 
     }
 
@@ -433,7 +451,6 @@ function addMessage(text, sender) {
     return message;
 
 }
-e
 /* ========= Update Thinking Message ========= */
 
 function updateMessage(element, text) {
