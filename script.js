@@ -3,13 +3,17 @@
    PART 1 - SETUP
 ===================================================== */
 
+/* =====================================================
+   ASK BRICE
+   PART 1 - SETUP
+===================================================== */
+
 /* ========= Buttons ========= */
 
 const sendBtn = document.getElementById("sendBtn");
 const micBtn = document.getElementById("micBtn");
 const imageBtn = document.getElementById("imageBtn");
 const imageInput = document.getElementById("imageInput");
-
 const menuBtn = document.getElementById("menuBtn");
 const newChatBtn = document.getElementById("newChatBtn");
 
@@ -49,26 +53,23 @@ let speakerEnabled =
     localStorage.getItem(SPEAKER_STORAGE_KEY) !== "false";
 
 /* =====================================================
-   PLACEHOLDERS
+   RANDOM PLACEHOLDERS
 ===================================================== */
 
 const placeholders = [
 
-    "Alright... what's on your mind?",
-
+    "Alright... what the hell's on your mind?",
     "Hit me with it.",
-
-    "What's broken now?",
-
-    "Need something?",
-
+    "What's your bullshit today?",
     "Talk to me.",
-
-    "What are we figuring out today?",
-
-    "I'm listening.",
-
-    "Let's solve something."
+    "Alright... what did you fuck up now?",
+    "What's broken now?",
+    "Need somethin' or just wanna bullshit?",
+    "Well? I'm waiting.",
+    "Give me something interesting.",
+    "What's the dumb idea today?",
+    "Lay it on me.",
+    "What disaster are we fixing now?"
 
 ];
 
@@ -89,17 +90,19 @@ function setRandomPlaceholder() {
 
 const thinkingMessages = [
 
+    "Rolling my eyes...",
     "Thinking...",
-
-    "Looking into it...",
-
+    "Trying to care...",
+    "Hold your damn horses...",
+    "Pretending this is a good question...",
     "One sec...",
-
-    "Checking my facts...",
-
-    "Working on it...",
-
-    "Give me a second..."
+    "Trying not to judge you...",
+    "Processing your bullshit...",
+    "Using my giant AI brain...",
+    "Figuring out how to say this nicely...",
+    "Searching the internet so you don't have to...",
+    "Doing the smart people stuff...",
+    "Trying not to break anything..."
 
 ];
 
