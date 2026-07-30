@@ -1,7 +1,3 @@
-/* =====================================================
-   ASK BRICE
-   PART 1 - SETUP
-===================================================== */
 
 /* =====================================================
    ASK BRICE
@@ -14,6 +10,8 @@ const sendBtn = document.getElementById("sendBtn");
 const micBtn = document.getElementById("micBtn");
 const imageBtn = document.getElementById("imageBtn");
 const imageInput = document.getElementById("imageInput");
+const videoBtn = document.getElementById("videoBtn");
+
 const menuBtn = document.getElementById("menuBtn");
 const newChatBtn = document.getElementById("newChatBtn");
 
@@ -863,6 +861,40 @@ if ("webkitSpeechRecognition" in window) {
 }
 
 console.log("✅ Part 4 Loaded");
+
+/* =====================================================
+   VIDEO GENERATION
+===================================================== */
+
+if (videoBtn) {
+
+    videoBtn.addEventListener("click", generateVideo);
+
+}
+
+async function generateVideo() {
+
+    const promptText = prompt.value.trim();
+
+    if (!promptText) {
+
+        addMessage(
+            "⚠️ Tell me what video you want first.",
+            "bot"
+        );
+
+        return;
+
+    }
+
+    addMessage(
+        `🎬 Generating your video...\n\n"${promptText}"`,
+        "bot"
+    );
+
+ 
+}
+
 /* =====================================================
    PART 5 - SEND MESSAGE
 ===================================================== */
