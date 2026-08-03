@@ -108,53 +108,23 @@
 
 <footer class="bottomBar">
 
-   <input
-    type="file"
-    id="imageInput"
-    accept="image/*,.pdf,.doc,.docx,.txt,.csv,.xlsx,.json"
-    hidden>
+    <button id="imageBtn" class="circleButton">💩</button>
 
-<button
-    id="imageBtn"
-    class="circleButton"
-    title="Upload your bullshit">
+    <button id="micBtn" class="circleButton">🎙️</button>
 
-    💩
+    <div class="promptContainer">
 
-</button>
+        <textarea
+            id="prompt"
+            rows="1"
+            placeholder="Drop your bullshit..."
+            spellcheck="true"></textarea>
 
-<button
-    id="videoBtn"
-    class="circleButton"
-    title="Generate Video">
+    </div>
 
-    🎬
+    <button id="videoBtn" class="circleButton">🎬</button>
 
-</button>
-    <button
-        id="micBtn"
-        class="circleButton"
-        title="Voice">
-
-        🎙️
-
-    </button>
-
-    <textarea
-        id="prompt"
-        rows="1"
-        placeholder="Ask Brice anything..."
-        autocomplete="off"
-        spellcheck="true"></textarea>
-
-    <button
-        id="sendBtn"
-        class="circleButton"
-        title="Send">
-
-        🧠
-
-    </button>
+    <button id="sendBtn" class="circleButton">🧠</button>
 
 </footer>
 
