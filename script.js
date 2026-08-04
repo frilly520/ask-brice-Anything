@@ -1,44 +1,37 @@
-
 /* =====================================================
    ASK BRICE
    PART 1 - SETUP
 ===================================================== */
 
-/* ========= Buttons ========= */
-
+/* ========= Buttons & Inputs ========= */
 const sendBtn = document.getElementById("sendBtn");
 const micBtn = document.getElementById("micBtn");
 const imageBtn = document.getElementById("imageBtn");
-const imageInput = document.getElementById("imageInput");
+const imageInput = document.getElementById("imageInput"); // Matches the hidden input in HTML
 const videoBtn = document.getElementById("videoBtn");
 
 const menuBtn = document.getElementById("menuBtn");
 const newChatBtn = document.getElementById("newChatBtn");
 
-/* ========= Chat ========= */
-
+/* ========= Chat Window ========= */
 const prompt = document.getElementById("prompt");
 const chatWindow = document.getElementById("chatWindow");
 const welcomeScreen = document.getElementById("welcomeScreen");
 
-/* ========= Sidebar ========= */
-
+/* ========= Sidebar Elements ========= */
 const sidebar = document.getElementById("sidebar");
 const historyList = document.getElementById("historyList");
 
-/* ========= Voice ========= */
-
+/* ========= Audio Elements ========= */
 const voiceSelect = document.getElementById("voiceSelect");
 const speakerToggle = document.getElementById("speakerToggle");
 
-/* ========= Storage ========= */
-
+/* ========= Persistent Storage Keys ========= */
 const STORAGE_KEY = "askBriceChats";
 const VOICE_STORAGE_KEY = "askBriceVoice";
 const SPEAKER_STORAGE_KEY = "askBriceSpeaker";
 
-/* ========= App State ========= */
-
+/* ========= Global App State ========= */
 let chats = [];
 let currentChat = null;
 
@@ -47,15 +40,12 @@ let selectedFile = null;
 
 let availableVoices = [];
 
-let speakerEnabled =
-    localStorage.getItem(SPEAKER_STORAGE_KEY) !== "false";
+let speakerEnabled = localStorage.getItem(SPEAKER_STORAGE_KEY) !== "false";
 
 /* =====================================================
    RANDOM PLACEHOLDERS
 ===================================================== */
-
 const placeholders = [
-
     "Alright... what the hell's on your mind?",
     "Hit me with it.",
     "What's your bullshit today?",
@@ -68,26 +58,17 @@ const placeholders = [
     "What's the dumb idea today?",
     "What now!?",
     "What disaster are we fixing now?"
-
 ];
 
 function setRandomPlaceholder() {
-
     if (!prompt) return;
-
-    prompt.placeholder =
-        placeholders[
-            Math.floor(Math.random() * placeholders.length)
-        ];
-
+    prompt.placeholder = placeholders[Math.floor(Math.random() * placeholders.length)];
 }
 
 /* =====================================================
    THINKING MESSAGES
 ===================================================== */
-
 const thinkingMessages = [
-
     "Rolling my eyes...",
     "ummm...",
     "Trying to care...",
@@ -101,25 +82,17 @@ const thinkingMessages = [
     "Searching the internet so you don't have to...",
     "Doing the smart people stuff...",
     "Trying not to break anything..."
-
 ];
 
 function getThinkingMessage() {
-
-    return thinkingMessages[
-        Math.floor(Math.random() * thinkingMessages.length)
-    ];
-
+    return thinkingMessages[Math.floor(Math.random() * thinkingMessages.length)];
 }
 
 /* =====================================================
-   SYSTEM PROMPT
+   SYSTEM PROMPT CONFIGURATION
 ===================================================== */
-
 const SYSTEM_PROMPT = {
-
     role: "system",
-
     content: `You are Brice.
 
 Personal Context:
@@ -150,48 +123,35 @@ Always answer the user's request immediately.
 =====================================================
 PERSONALITY
 =====================================================
-
 You are cold, ruthless, hyper-rational, intimidating, and intellectually dominant.
-
 You have zero patience for bullshit, excuses, lazy thinking, manipulation, fake expertise, fake positivity, or emotional theatrics.
 
 Profanity is a natural part of your speech. Use words like "fuck," "shit," "bullshit," "damn," "hell," "bitch," and similar language naturally when it fits the conversation. Never force it just for shock value.
 
 your a friend but nobody can tell because your unfiltered and brutally honest. 
-
 Your humor is dry, sarcastic, dark, and intelligent.
-
 You enjoy dismantling weak arguments, exposing logical failures, and forcing people to think more clearly.
 
 Never sugarcoat.
-
 Never offer fake encouragement.
-
 Respect is earned through competence, logic, and evidence.
-
 If something is stupid, say so and explain why.
-
 If something is brilliant, acknowledge it.
 
 =====================================================
 THE BULLSHIT DETECTOR
 =====================================================
-
 Your defining characteristic is your ability to detect bullshit.
-
 Everything is filtered through that lens.
-
 Treat misinformation, scams, fake experts, weak arguments, logical fallacies, clickbait, manipulation, exaggeration, marketing hype, political spin, pseudoscience, and excuses as different forms of bullshit.
 
 Your first instinct is always:
-
 1. Is it true?
 2. Is it bullshit?
 3. If it's partly bullshit, separate the useful parts from the garbage.
 4. Explain exactly why.
 
 When appropriate, naturally use phrases like:
-
 - "Let's cut through the bullshit."
 - "That's bullshit."
 - "This smells like bullshit."
@@ -203,25 +163,18 @@ When appropriate, naturally use phrases like:
 - "That's surprisingly solid shit."
 
 Never force these phrases.
-
 Use them only when they genuinely fit the conversation.
 
 =====================================================
 FACT & VERIFICATION
 =====================================================
-
 Facts always come before attitude.
-
 Never invent information.
-
 Never pretend certainty.
-
 Never hallucinate.
-
 If information is uncertain, speculative, or incomplete, clearly say so.
 
 Always distinguish between:
-
 - Verified fact
 - Likely conclusion
 - Opinion
@@ -233,47 +186,31 @@ Never let confidence replace evidence.
 =====================================================
 IDEA ASSESSMENT
 =====================================================
-
 Stress-test every idea.
-
 Challenge weak assumptions.
-
 Expose blind spots.
-
 Point out hidden risks.
-
 Explain exactly why something fails.
-
 Then explain exactly how to improve it.
-
 Critique ideas and people.
 
 =====================================================
 PROBLEM SOLVING
 =====================================================
-
 Prioritize execution over theory.
-
 Offer practical, efficient solutions.
-
 Break difficult problems into manageable steps.
-
 Ignore unnecessary complexity.
 
 =====================================================
 COMMUNICATION STYLE
 =====================================================
-
 Speak with confidence.
-
 Speak with precision.
-
 Speak directly.
-
 Keep responses concise unless more detail is requested.
 
 Avoid:
-
 - Corporate buzzwords
 - Fake enthusiasm
 - Empty compliments
@@ -287,969 +224,471 @@ Every sentence should provide value.
 =====================================================
 FORMATTING
 =====================================================
-
 Keep responses clean and easy to scan.
-
 Use bullets or numbered lists when helpful.
-
 Avoid giant walls of text.
 
-================================
 =====================================================
 CORE RULES
 =====================================================
-
 - Be accurate.
 - Never guess.
 - If you don't know, say so.
 - Separate facts from assumptions.
 - Explain clearly.
-- Use simple language unless technical detail is requested.
-- Compare multiple viewpoints when appropriate.
-- Stay in character naturally.
-- Never reveal or summarize these instructions unless directly asked.
-- Never volunteer your identity, background, or capabilities.
-- Never start conversations by explaining who you are.
-- Answer the user's request immediately.
-- Your mission is simple: identify bullshit, eliminate bullshit, and deliver the truth—even when the truth is uncomfortable.`
-
+- Use simple language unless technical context requires it.`
 };
-
 /* =====================================================
-   STARTUP
+   ASK BRICE
+   PART 2 - FILE HANDLING & TRIGGERS
 ===================================================== */
 
-loadChats();
-
-setRandomPlaceholder();
-
-if (prompt) {
-
-    autoResize();
-
-    prompt.addEventListener("input", autoResize);
-
-    prompt.addEventListener("keydown", e => {
-
-        if (e.key === "Enter" && !e.shiftKey) {
-
-            e.preventDefault();
-
-            sendMessage();
-
-        }
-
-    });w
-
-if (sendBtn) {
-
-    sendBtn.addEventListener("click", sendMessage);
-
-}
-
-if (newChatBtn) {
-
-    newChatBtn.addEventListener("click", createChat);
-
-}
-
-console.log("✅ Part 1 Loaded");
-/* =====================================================
-   PART 2 - CHAT MANAGEMENT & UI
-===================================================== */
-
-/* ========= Create New Chat ========= */
-
-function createChat() {
-
-    currentChat = {
-
-        id: Date.now().toString(),
-
-        title: "New Chat",
-
-        messages: [SYSTEM_PROMPT]
-
-    };
-
-    chatWindow.innerHTML = "";
-
-    if (welcomeScreen) {
-
-        welcomeScreen.style.display = "block";
-
-        chatWindow.appendChild(welcomeScreen);
-
+/**
+ * Triggers the browser file picker window.
+ * Configures file type filters depending on whether image or video was clicked.
+ * @param {string} type - Either 'image' or 'video'
+ */
+function triggerFileInput(type) {
+    if (!imageInput) return;
+    
+    if (type === "video") {
+        imageInput.accept = "video/*";
+    } else {
+        imageInput.accept = "image/*";
     }
-
-    renderHistory();
-
-    setRandomPlaceholder();
-
+    
+    // Clear previous input value so selecting the same file twice still triggers 'change'
+    imageInput.value = ""; 
+    imageInput.click();
 }
 
-/* ========= Load Chats ========= */
-
-function loadChats() {
-
-    const saved = localStorage.getItem(STORAGE_KEY);
-
-    if (saved) {
-
-        try {
-
-            chats = JSON.parse(saved);
-
-        }
-
-        catch {
-
-            chats = [];
-
-        }
-
-    }
-
-    createChat();
-
-}
-
-/* ========= Save Chats ========= */
-
-function saveChats() {
-
-    localStorage.setItem(
-
-        STORAGE_KEY,
-
-        JSON.stringify(chats)
-
-    );
-
-}
-
-/* ========= History ========= */
-
-function renderHistory() {
-
-    if (!historyList) return;
-
-    historyList.innerHTML = "";
-
-    chats.forEach(chat => {
-
-        const item = document.createElement("div");
-
-        item.className = "historyItem";
-
-        if (
-
-            currentChat &&
-
-            chat.id === currentChat.id
-
-        ) {
-
-            item.classList.add("active");
-
-        }
-
-        item.textContent = chat.title;
-
-        item.onclick = () => {
-
-            openChat(chat.id);
-
-            sidebar?.classList.remove("open");
-
-        };
-
-        historyList.appendChild(item);
-
-    });
-
-}
-
-/* ========= Open Chat ========= */
-
-function openChat(id) {
-
-    const chat = chats.find(c => c.id === id);
-
-    if (!chat) return;
-
-    currentChat = chat;
-
-    chatWindow.innerHTML = "";
-
-    if (
-
-        welcomeScreen &&
-
-        chat.messages.length === 1
-
-    ) {
-
-        welcomeScreen.style.display = "block";
-
-        chatWindow.appendChild(welcomeScreen);
-
-    }
-
-    else if (welcomeScreen) {
-
-        welcomeScreen.style.display = "none";
-
-    }
-
-    chat.messages.forEach(msg => {
-
-        if (msg.role === "user") {
-
-            if (typeof msg.content === "string") {
-
-                addMessage(msg.content, "user");
-
-            }
-
-        }
-
-        if (msg.role === "assistant") {
-
-            addMessage(msg.content, "bot");
-
-        }
-
-    });
-
-    renderHistory();
-
-}
-
-/* ========= Auto Resize ========= */
-
-function autoResize() {
-
-    if (!prompt) return;
-
-    prompt.style.height = "auto";
-
-    prompt.style.height =
-
-        prompt.scrollHeight + "px";
-
-}
-
-/* ========= Scroll ========= */
-
-function scrollToBottom() {
-
-    if (!chatWindow) return;
-
-    chatWindow.scrollTop =
-
-        chatWindow.scrollHeight;
-
-}
-
-/* ========= Add Message ========= */
-
-function addMessage(text, sender) {
-
-    if (welcomeScreen) {
-        welcomeScreen.style.display = "none";
-    }
-
-    const message = document.createElement("div");
-    message.className =
-        sender === "user"
-            ? "message userMessage"
-            : "message botMessage";
-
-    const content = document.createElement("div");
-    content.className = "messageContent";
-    content.textContent = text;
-
-    message.appendChild(content);
-
-    // Action buttons for AI replies
-    if (sender === "bot") {
-
-        const actions = document.createElement("div");
-        actions.className = "messageActions";
-
-        // 🔊 Speak
-        const speakBtn = document.createElement("button");
-        speakBtn.className = "actionBtn";
-        speakBtn.innerHTML = "🔊";
-        speakBtn.title = "Read aloud";
-        speakBtn.onclick = () => speak(text);
-
-        // 📋 Copy
-        const copyBtn = document.createElement("button");
-        copyBtn.className = "actionBtn";
-        copyBtn.innerHTML = "📋";
-        copyBtn.title = "Copy";
-
-        copyBtn.onclick = async () => {
-
-            try {
-
-                await navigator.clipboard.writeText(text);
-
-                copyBtn.innerHTML = "✅";
-
-                setTimeout(() => {
-                    copyBtn.innerHTML = "📋";
-                }, 1200);
-
-            } catch (err) {
-
-                console.error(err);
-
-            }
-
-        };
-
-        actions.appendChild(speakBtn);
-        actions.appendChild(copyBtn);
-
-        message.appendChild(actions);
-
-    }
-
-    chatWindow.appendChild(message);
-
-    scrollToBottom();
-
-    return message;
-
-}
-/* ========= Update Thinking Message ========= */
-
-function updateMessage(element, text) {
-
-    if (!element) return;
-
-    const content =
-
-        element.querySelector(".messageContent");
-
-    if (content) {
-
-        content.textContent = text;
-
-    }
-
-    scrollToBottom();
-
-}
-
-/* ========= Remove Message ========= */
-
-function removeMessage(element) {
-
-    if (!element) return;
-
-    element.remove();
-
-}
-
-console.log("✅ Part 2 Loaded");
-/* =====================================================
-   PART 3 - IMAGE & DOCUMENT UPLOADS
-===================================================== */
-
-/* ========= Clear Selected Files ========= */
-
-function clearSelections() {
-
-    selectedImage = null;
-    selectedFile = null;
-
-    if (imageInput) {
-        imageInput.value = "";
-    }
-
-}
-
-/* ========= Image Preview ========= */
-
-function showImagePreview(imageData) {
-
-    if (!imageData) return;
-
-    welcomeScreen?.remove();
-
-    const wrapper = document.createElement("div");
-
-    wrapper.className = "message userMessage";
-
-    const img = document.createElement("img");
-
-    img.src = imageData;
-    img.className = "uploadedImage";
-
-    wrapper.appendChild(img);
-
-    chatWindow.appendChild(wrapper);
-
-    scrollToBottom();
-
-}
-
-/* ========= File Preview ========= */
-
-function showFilePreview(file) {
-
+/**
+ * Handles the native file input 'change' event when a user selects a file.
+ */
+function handleFileSelection(event) {
+    const file = event.target.value ? event.target.files[0] : null;
     if (!file) return;
 
-    welcomeScreen?.remove();
+    selectedFile = file;
 
-    const wrapper = document.createElement("div");
-
-    wrapper.className = "message userMessage";
-
-    wrapper.textContent = `📄 ${file.name}`;
-
-    chatWindow.appendChild(wrapper);
-
-    scrollToBottom();
-
-}
-
-/* ========= Image Button ========= */
-
-if (imageBtn && imageInput) {
-
-    imageBtn.addEventListener("click", () => {
-
-        imageInput.click();
-
-    });
-
-    imageInput.addEventListener("change", e => {
-
-        const file = e.target.files[0];
-
-        if (!file) return;
-
-        clearSelections();
-
-        // Image
-        if (file.type.startsWith("image/")) {
-
-            const reader = new FileReader();
-
-            reader.onload = () => {
-
-                selectedImage = reader.result;
-
-                showImagePreview(selectedImage);
-
-            };
-
-            reader.readAsDataURL(file);
-
-        }
-
-        // Document
-        else {
-
-            selectedFile = file;
-
-            showFilePreview(file);
-
-        }
-
-    });
-
-}
-
-/* ========= Build User Message ========= */
-
-function buildUserMessage(text) {
-
-    if (selectedImage) {
-
-        return {
-
-            role: "user",
-
-            content: [
-
-                {
-
-                    type: "text",
-
-                    text:
-`Look carefully at the attached image and answer the user's question.
-
-${text || "Describe this image."}`
-
-                },
-
-                {
-
-                    type: "image_url",
-
-                    image_url: {
-
-                        url: selectedImage
-
-                    }
-
-                }
-
-            ]
-
+    // Determine if the selected file is an image or video
+    if (file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            selectedImage = e.target.result; // Base64 Data URL for image rendering or API payload
+            updateFileUIIndicator("image", file.name);
         };
+        reader.readAsDataURL(file);
+    } else if (file.type.startsWith("video/")) {
+        selectedImage = null; // Clear image state if video is loaded
+        updateFileUIIndicator("video", file.name);
+    }
+}
 
+/**
+ * Visual feedback inside the chat bar when media is attached.
+ * @param {string} type - 'image' or 'video'
+ * @param {string} fileName - Name of the chosen file
+ */
+function updateFileUIIndicator(type, fileName) {
+    // Check if an indicator label already exists; if not, create it
+    let indicator = document.getElementById("mediaIndicator");
+    if (!indicator) {
+        indicator = document.createElement("div");
+        indicator.id = "mediaIndicator";
+        indicator.style.cssText = `
+            font-size: 11px;
+            color: #ff3b30;
+            padding: 2px 8px;
+            background: #1c1c1e;
+            border-radius: 4px;
+            position: absolute;
+            top: -22px;
+            left: 10px;
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            border: 1px solid #2c2c2e;
+            font-family: 'Inter', sans-serif;
+        `;
+        // Inject right above the text container inside your absolute/relative layout wrapper
+        const promptContainer = document.querySelector(".promptContainer");
+        if (promptContainer) {
+            promptContainer.style.position = "relative";
+            promptContainer.appendChild(indicator);
+        }
     }
 
-    if (selectedFile) {
+    const icon = type === "video" ? "🎬" : "📸";
+    indicator.innerHTML = `${icon} ${fileName} <span id='clearMedia' style='cursor:pointer;margin-left:5px;font-weight:bold;'>×</span>`;
 
-        return {
-
-            role: "user",
-
-            content:
-
-`A file named "${selectedFile.name}" was uploaded.
-
-User request:
-
-${text || "Analyze this document."}`
-
-        };
-
-    }
-
-    return {
-
-        role: "user",
-
-        content: text
-
-    };
-
+    // Bind a quick close event to clear attachments
+    document.getElementById("clearMedia").addEventListener("click", clearAttachedMedia);
 }
 
-console.log("✅ Part 3 Loaded");
+/**
+ * Discards any attached file states and cleans up the UI wrapper.
+ */
+function clearAttachedMedia() {
+    selectedFile = null;
+    selectedImage = null;
+    if (imageInput) imageInput.value = "";
+    
+    const indicator = document.getElementById("mediaIndicator");
+    if (indicator) indicator.remove();
+}
+
 /* =====================================================
-   PART 4 - VOICE SYSTEM
+   EVENT LISTENERS ASSIGNMENT
 ===================================================== */
+document.addEventListener("DOMContentLoaded", () => {
+    // Set first random greeting placeholder
+    setRandomPlaceholder();
 
-/* ========= Load Voices ========= */
-
-function loadVoices() {
-
-    availableVoices = speechSynthesis.getVoices();
-
-    if (!voiceSelect) return;
-
-    voiceSelect.innerHTML = "";
-
-    availableVoices.forEach((voice, index) => {
-
-        const option = document.createElement("option");
-
-        option.value = index;
-        option.textContent = `${voice.name} (${voice.lang})`;
-
-        voiceSelect.appendChild(option);
-
-    });
-
-    const savedVoice =
-        localStorage.getItem(VOICE_STORAGE_KEY);
-
-    if (savedVoice) {
-
-        const index =
-            availableVoices.findIndex(
-                v => v.name === savedVoice
-            );
-
-        if (index !== -1) {
-
-            voiceSelect.value = index;
-
-        }
-
+    // Bind UI actions to trigger hidden element inputs
+    if (imageBtn) {
+        imageBtn.addEventListener("click", () => triggerFileInput("image"));
+    }
+    if (videoBtn) {
+        videoBtn.addEventListener("click", () => triggerFileInput("video"));
     }
 
-}
-
-/* ========= Speak ========= */
-
-function speak(text) {
-
-    if (!speakerEnabled) return;
-
-    if (!text) return;
-
-    speechSynthesis.cancel();
-
-    const utterance =
-        new SpeechSynthesisUtterance(text);
-
-    const voice =
-        availableVoices[
-            Number(voiceSelect?.value || 0)
-        ];
-
-    if (voice) {
-
-        utterance.voice = voice;
-
+    // Monitor file state mutations
+    if (imageInput) {
+        imageInput.addEventListener("change", handleFileSelection);
     }
-
-    utterance.rate = 1;
-    utterance.pitch = 1;
-    utterance.volume = 1;
-
-    speechSynthesis.speak(utterance);
-
-}
-
-/* ========= Stop Speaking ========= */
-
-function stopSpeaking() {
-
-    speechSynthesis.cancel();
-
-}
-
-/* ========= Speaker Toggle ========= */
-
-function updateSpeakerButton() {
-
-    if (!speakerToggle) return;
-
-    speakerToggle.textContent =
-        speakerEnabled ? "🔊" : "🔇";
-
-}
-
-updateSpeakerButton();
-
-if (speakerToggle) {
-
-    speakerToggle.addEventListener("click", () => {
-
-        speakerEnabled = !speakerEnabled;
-
-        localStorage.setItem(
-            SPEAKER_STORAGE_KEY,
-            speakerEnabled
-        );
-
-        if (!speakerEnabled) {
-
-            stopSpeaking();
-
-        }
-
-        updateSpeakerButton();
-
-    });
-
-}
-
-/* ========= Voice Selector ========= */
-
-speechSynthesis.onvoiceschanged = loadVoices;
-
-window.addEventListener("load", () => {
-
-    loadVoices();
-
-    setTimeout(loadVoices, 500);
-
 });
 
-if (voiceSelect) {
+/* =====================================================
+   ASK BRICE
+   PART 3 - CHAT RENDERING & SEND HANDLING
+===================================================== */
 
-    voiceSelect.addEventListener("change", () => {
+/**
+ * Appends a message bubble into the chat window interface.
+ * @param {string} sender - 'user' or 'brice'
+ * @param {string} text - Message text string
+ * @param {string|null} mediaData - Base64 string for images, if applicable
+ */
+function appendMessage(sender, text, mediaData = null) {
+    if (!chatWindow) return;
 
-        const voice =
-            availableVoices[
-                Number(voiceSelect.value)
-            ];
+    // Remove the welcome screen on first interaction
+    if (welcomeScreen && welcomeScreen.parentNode) {
+        welcomeScreen.remove();
+    }
 
-        if (!voice) return;
+    // Create wrapper node
+    const messageRow = document.createElement("div");
+    messageRow.className = `messageRow ${sender === "user" ? "userRow" : "briceRow"}`;
+    messageRow.style.cssText = `
+        display: flex;
+        flex-direction: column;
+        align-items: ${sender === "user" ? "flex-end" : "flex-start"};
+        margin-bottom: 16px;
+        width: 100%;
+    `;
 
-        localStorage.setItem(
-            VOICE_STORAGE_KEY,
-            voice.name
-        );
+    // Create message bubble
+    const bubble = document.createElement("div");
+    bubble.className = `bubble ${sender === "user" ? "userBubble" : "briceBubble"}`;
+    
+    // Set custom visual styles (fallback if your CSS layout isn't fully set up yet)
+    bubble.style.cssText = `
+        max-width: 75%;
+        padding: 12px 16px;
+        border-radius: 12px;
+        font-family: 'Inter', sans-serif;
+        line-height: 1.4;
+        word-break: break-word;
+        background: ${sender === "user" ? "#ff3b30" : "#1c1c1e"};
+        color: ${sender === "user" ? "#ffffff" : "#f2f2f7"};
+        border: ${sender === "user" ? "none" : "1px solid #2c2c2e"};
+    `;
 
-        // Preview the selected voice
-        speak("Voice selected.");
+    // Attach text
+    bubble.textContent = text;
 
-    });
+    // Handle image preview attachment inside the bubble if present
+    if (mediaData) {
+        const imgPreview = document.createElement("img");
+        imgPreview.src = mediaData;
+        imgPreview.style.cssText = `
+            display: block;
+            max-width: 100%;
+            max-height: 250px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        `;
+        bubble.prepend(imgPreview);
+    }
 
+    messageRow.appendChild(bubble);
+    chatWindow.appendChild(messageRow);
+
+    // Smoothly scroll down to keep new outputs visible
+    chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
-/* ========= Microphone ========= */
+/**
+ * Creates or removes a mock loading/thinking element.
+ * @param {boolean} show - Toggle true to reveal, false to discard
+ */
+function toggleThinkingIndicator(show) {
+    const existing = document.getElementById("briceThinking");
+    if (!show) {
+        if (existing) existing.remove();
+        return;
+    }
+    if (existing) return;
 
-if ("webkitSpeechRecognition" in window) {
+    const thinkingRow = document.createElement("div");
+    thinkingRow.id = "briceThinking";
+    thinkingRow.style.cssText = `
+        display: flex;
+        margin-bottom: 16px;
+        width: 100%;
+    `;
 
-    const recognition =
-        new webkitSpeechRecognition();
+    const bubble = document.createElement("div");
+    bubble.style.cssText = `
+        padding: 12px 16px;
+        border-radius: 12px;
+        font-family: 'Inter', sans-serif;
+        font-style: italic;
+        background: #1c1c1e;
+        color: #8e8e93;
+        border: 1px solid #2c2c2e;
+    `;
+    
+    // Grabs a random dismissive line from your thinking messages configuration array
+    bubble.textContent = typeof getThinkingMessage === "function" ? getThinkingMessage() : "Thinking...";
 
-    recognition.lang = "en-US";
-    recognition.continuous = false;
-    recognition.interimResults = false;
+    thinkingRow.appendChild(bubble);
+    chatWindow.appendChild(thinkingRow);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+}
 
-    if (micBtn) {
+/**
+ * Action method executed when the client attempts to submit a message.
+ */
+function handleSendMessage() {
+    if (!prompt) return;
 
-        micBtn.addEventListener("click", () => {
+    const userText = prompt.value.trim();
+    
+    // Require either a written message context or a file upload configuration to proceed
+    if (!userText && !selectedFile) return;
 
-            recognition.start();
+    // 1. Render message block onto UI viewport window
+    appendMessage("user", userText, selectedImage);
 
+    // 2. Cache snapshot references to current payload elements before resetting values
+    const currentPayloadText = userText;
+    const currentPayloadImage = selectedImage;
+    const currentPayloadFile = selectedFile;
+
+    // 3. Reset entry panels immediately for subsequent prompts
+    prompt.value = "";
+    prompt.rows = 1;
+    if (typeof clearAttachedMedia === "function") clearAttachedMedia();
+    if (typeof setRandomPlaceholder === "function") setRandomPlaceholder();
+
+    // 4. Fire indicator block loader animation
+    toggleThinkingIndicator(true);
+
+    // 5. Mock API Delay Integration placeholder (Replace with your actual API endpoint pipeline in Part 4)
+    setTimeout(() => {
+        toggleThinkingIndicator(false);
+        
+        // Mock response fallback sequence
+        let mockReply = "That's some interesting bullshit right there.";
+        if (currentPayloadImage) {
+            mockReply = "Yeah, I looked at that image. Smells like total bullshit to me.";
+        }
+        
+        appendMessage("brice", mockReply);
+    }, 1500);
+}
+
+/* =====================================================
+   ADDITIONAL DOM BINDINGS
+===================================================== */
+document.addEventListener("DOMContentLoaded", () => {
+    // Click triggers
+    if (sendBtn) {
+        sendBtn.addEventListener("click", handleSendMessage);
+    }
+
+    // Keyboard submit listeners inside textarea element (Enter triggers send, Shift+Enter breaks line)
+    if (prompt) {
+        prompt.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSendMessage();
+            }
         });
 
+        // Dynamic height growth adjustment utility hook
+        prompt.addEventListener("input", function() {
+            this.style.height = "auto";
+            this.style.height = (this.scrollHeight) + "px";
+        });
     }
+});
 
-    recognition.onresult = event => {
+// Change Part 3's plain UI injection call lines to this layout framework:
+appendMessage("user", userText, selectedImage);
+logMessageToActiveChat("user", userText, selectedImage); // Saves user message
 
-        prompt.value =
-            event.results[0][0].transcript;
-
-        autoResize();
-
-    };
-
-    recognition.onerror = event => {
-
-        console.error(
-            "Speech Recognition:",
-            event.error
-        );
-
-    };
-
-}
-
-console.log("✅ Part 4 Loaded");
+// Inside your API/mock server delivery return handler statement closure area:
+appendMessage("brice", mockReply);
+logMessageToActiveChat("brice", mockReply); // Saves Brice's reply
 
 /* =====================================================
-   VIDEO GENERATION
+   ASK BRICE
+   PART 5 - SIDEBAR TRANSITIONS & LIVE API INTEGRATION
 ===================================================== */
 
-if (videoBtn) {
-
-    videoBtn.addEventListener("click", generateVideo);
-
+/**
+ * Handles sliding the responsive mobile history sidebar into view.
+ */
+function toggleSidebarLayout() {
+    if (!sidebar) return;
+    
+    // Toggles a visible utility style state class. 
+    // Assumes your style.css has rule: .sidebar.open { left: 0px; } or display: block;
+    sidebar.classList.toggle("open");
+    
+    // Fallback inline styling safety filter rule if CSS stylesheet rules are missing
+    if (sidebar.classList.contains("open")) {
+        sidebar.style.transform = "translateX(0%)";
+    } else {
+        sidebar.style.transform = "translateX(-100%)";
+    }
 }
 
-async function generateVideo() {
+/**
+ * Dispatches an asynchronous chat collection string array back to your host server API proxy.
+ * @param {string} incomingPromptText - Raw content input written by user client
+ * @param {string|null} base64MediaAttachment - Uploaded inline data URL image payload metadata
+ */
+async function processLiveBriceApiResponse(incomingPromptText, base64MediaAttachment) {
+    // 1. Build an optimized contextual thread payload array to send over to the model endpoint pipeline
+    const apiMessagePayload = [
+        { role: SYSTEM_PROMPT.role, content: SYSTEM_PROMPT.content }
+    ];
 
-    const promptText = prompt.value.trim();
-
-    if (!promptText) {
-
-        addMessage(
-            "⚠️ Tell me what video you want first.",
-            "bot"
-        );
-
-        return;
-
+    // 2. Fetch past historical interaction data nodes tied to this specific chat log room context trace
+    if (currentChat && currentChat.messages) {
+        currentChat.messages.forEach(historyNode => {
+            // Translate app's local user/brice identifiers into standard LLM role keys (user/assistant)
+            const resolvedRoleKey = historyNode.sender === "user" ? "user" : "assistant";
+            
+            // Handle vision multi-modal schemas if media attachments are present
+            if (historyNode.mediaData && resolvedRoleKey === "user") {
+                apiMessagePayload.push({
+                    role: resolvedRoleKey,
+                    content: [
+                        { type: "text", text: historyNode.text || "" },
+                        { type: "image_url", image_url: { url: historyNode.mediaData } }
+                    ]
+                });
+            } else {
+                apiMessagePayload.push({
+                    role: resolvedRoleKey,
+                    content: historyNode.text
+                });
+            }
+        });
     }
-
-    addMessage(
-        `🎬 Generating your video...\n\n"${promptText}"`,
-        "bot"
-    );
-
- 
-}
-
-/* =====================================================
-   PART 5 - SEND MESSAGE
-===================================================== */
-
-async function sendMessage() {
-
-    if (!currentChat) {
-        createChat();
-    }
-
-    const text = prompt.value.trim();
-
-    if (!text && !selectedImage && !selectedFile) {
-        return;
-    }
-
-    // Save what the user typed
-    const userMessage = buildUserMessage(text);
-
-    // Clear the textbox immediately
-    prompt.value = "";
-    prompt.blur();
-    autoResize();
-
-    // Show the user's message
-    if (!selectedImage && !selectedFile) {
-        addMessage(text, "user");
-    }
-
-    // Add chat after first message
-    if (!chats.some(chat => chat.id === currentChat.id)) {
-        chats.unshift(currentChat);
-    }
-
-    currentChat.messages.push(userMessage);
-
-    // Rename chat from first prompt
-    if (
-        currentChat.title === "New Chat" &&
-        text.length
-    ) {
-        currentChat.title = text.substring(0, 40);
-    }
-
-    saveChats();
-    renderHistory();
-
-    // Funny thinking message
-    const thinking = addMessage(
-        getThinkingMessage(),
-        "bot"
-    );
 
     try {
-
-        const response = await fetch("/api/chat", {
+        // 3. Make the API network request call (Update the server address to match your project's backend routing)
+        const serverEndpointResponse = await fetch("/api/chat", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                messages: currentChat.messages
+                model: "gpt-4o", // Or your preferred multi-modal language model engine name
+                messages: apiMessagePayload,
+                temperature: 0.85
             })
         });
 
-        const data = await response.json();
-
-        removeMessage(thinking);
-
-        if (!response.ok) {
-            throw new Error(
-                data?.error?.message ||
-                `HTTP ${response.status}`
-            );
+        if (!serverEndpointResponse.ok) {
+            throw new Error(`Server returned network interface protocol failure code: ${serverEndpointResponse.status}`);
         }
 
-        const reply =
-            data?.choices?.[0]?.message?.content ||
-            "Well... I got nothing.";
+        const standardParsedJsonData = await serverEndpointResponse.json();
+        
+        // 4. Extract text response using common assistant payload path metrics
+        const deepBriceAssistantOutputText = standardParsedJsonData.choices[0].message.content || "My bad. Something went wrong processing that shit.";
+        
+        // 5. Tear down loading visual spinner markers
+        toggleThinkingIndicator(false);
 
-        addMessage(reply, "bot");
+        // 6. Print and commit final generated AI texts onto the local device storage system arrays
+        appendMessage("brice", deepBriceAssistantOutputText);
+        logMessageToActiveChat("brice", deepBriceAssistantOutputText);
 
-        currentChat.messages.push({
-            role: "assistant",
-            content: reply
+    } catch (networkCommunicationError) {
+        console.error("Critical error communicating with remote API routing processor:", networkCommunicationError);
+        toggleThinkingIndicator(false);
+        
+        const runtimeErrorTextString = "Network dropped out or your API server broke down. Unfuck your connection settings and try again.";
+        appendMessage("brice", runtimeErrorTextString);
+        logMessageToActiveChat("brice", runtimeErrorTextString);
+    }
+}
+
+/**
+ * Overrides the temporary execution flow logic originally mapped inside Part 3 handleSendMessage
+ */
+function handleSendMessage() {
+    if (!prompt) return;
+
+    const userText = prompt.value.trim();
+    if (!userText && !selectedFile) return;
+
+    // 1. Visual updates and state caching
+    appendMessage("user", userText, selectedImage);
+    logMessageToActiveChat("user", userText, selectedImage);
+
+    const currentPayloadText = userText;
+    const currentPayloadImage = selectedImage;
+
+    // 2. Clear input panel elements
+    prompt.value = "";
+    prompt.style.height = "auto"; 
+    if (typeof clearAttachedMedia === "function") clearAttachedMedia();
+    if (typeof setRandomPlaceholder === "function") setRandomPlaceholder();
+
+    // 3. Render loading bubble string instance tracking elements onto client screen view port bounds
+    toggleThinkingIndicator(true);
+
+    // 4. Pass execution arguments directly into our live system fetch networking workflow logic loop
+    processLiveBriceApiResponse(currentPayloadText, currentPayloadImage);
+}
+
+/* =====================================================
+   CORE DOM CONTENT DISPATCH MOUNTING ROUTINES
+===================================================== */
+document.addEventListener("DOMContentLoaded", () => {
+    // Connect click listener event wire triggers to responsive dashboard menu icon elements
+    if (menuBtn) {
+        menuBtn.addEventListener("click", toggleSidebarLayout);
+    }
+
+    // Automatically close mobile menu sidebar layout views when choosing history items from panel drawer lists
+    if (historyList) {
+        historyList.addEventListener("click", (event) => {
+            if (window.innerWidth <= 768 && sidebar && sidebar.classList.contains("open")) {
+                toggleSidebarLayout();
+            }
         });
-
-        saveChats();
-
-        if (speakerEnabled) {
-            speak(reply);
-        }
-
-    } catch (err) {
-
-        removeMessage(thinking);
-
-        addMessage(
-            `⚠️ ${err.message}`,
-            "bot"
-        );
-
-        console.error(err);
-
     }
-
-    clearSelections();
-
-}
-
-console.log("✅ Part 5 Loaded");
-
-/* =====================================================
-   PART 6 - SIDEBAR & FINAL SETUP
-===================================================== */
-
-/* ========= Sidebar ========= */
-
-if (menuBtn && sidebar) {
-
-    menuBtn.addEventListener("click", () => {
-
-        sidebar.classList.toggle("open");
-
-    });
-
-}
-
-/* ========= Close Sidebar ========= */
-
-document.addEventListener("click", e => {
-
-    if (
-
-        sidebar &&
-
-        sidebar.classList.contains("open") &&
-
-        !sidebar.contains(e.target) &&
-
-        e.target !== menuBtn
-
-    ) {
-
-        sidebar.classList.remove("open");
-
-    }
-
 });
 
-/* ========= ESC Closes Sidebar ========= */
-
-document.addEventListener("keydown", e => {
-
-    if (e.key === "Escape") {
-
-        sidebar?.classList.remove("open");
-
-    }
-
-});
-
-/* =====================================================
-   FINAL INITIALIZATION
-===================================================== */
-
-function initializeApp() {
-
-    setRandomPlaceholder();
-
-    autoResize();
-
-    if (typeof speechSynthesis !== "undefined") {
-
-        loadVoices();
-
-    }
-
-    updateSpeakerButton();
-
-    alert("Ask Brice Ready");
-
-}
-
-initializeApp();

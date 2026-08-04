@@ -2,149 +2,84 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Ask Brice</title>
-
     <meta name="theme-color" content="#000000">
 
     <link rel="manifest" href="manifest.json">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Permanent+Marker&family=Rubik+Dirt&family=Caveat:wght@700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Caveat:wght@700&family=Inter:wght@400;500;600;700;800&family=Permanent+Marker&family=Rubik+Dirt&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
 
 <!-- Sidebar -->
-
 <aside id="sidebar" class="sidebar">
-
     <div class="sidebar-header">
-
-        <h2>Past Bullshit</h2>
-
+        <h2>Your Past 💩</h2>
         <button id="newChatBtn">+ Fresh Bullshit</button>
-
-    </div>
-<div class="voiceSettings">
-
-    <label for="voiceSelect">
-        🗣️ Brice's Voice
-    </label>
-
-    <div class="voiceControls">
-
-        <select id="voiceSelect"></select>
-
-        <button
-            id="speakerToggle"
-            class="speakerToggle"
-            type="button"
-            title="Toggle voice"
-        >
-            🔊
-        </button>
-
     </div>
 
-</div>
-<div id="historyList"></div>
-    
+    <div class="voiceSettings">
+        <label for="voiceSelect">🗣️ Brice's Voice</label>
+        <div class="voiceControls">
+            <select id="voiceSelect"></select>
+            <button id="speakerToggle" class="speakerToggle" type="button" title="Toggle voice">
+                🔊
+            </button>
+        </div> 
+    </div> 
 
+    <div id="historyList"></div>
 </aside>
 
 <!-- Header -->
-
 <header class="header">
-
-    <button id="menuBtn" class="iconButton">
-        ☰
-    </button>
-
+    <button id="menuBtn" class="iconButton">☰</button>
     <div class="logo">
-
         <span class="brainEmoji">🧠</span>
-
         <span>Ask Brice</span>
-
     </div>
-
 </header>
 
-<!-- Chat -->
-
+<!-- Chat Window -->
 <main id="chatWindow" class="chatWindow">
-
     <section id="welcomeScreen">
-
-        <h1>
-
-            WHAT THE FUCK<br>
-            DO YOU WANT?
-
-        </h1>
-
-        <p class="welcomeScript">
-            Ask me anything...
-        </p>
-
-        <p class="subtitle">
-            I'll figure that shit out.
-        </p>
-
-    </section>
-
+        <h1>WHAT THE FUCK<br>DO YOU WANT?</h1>
+        <p class="welcomeScript">Ask me anything...</p>
+        <p class="subtitle">I'll figure that shit out.</p>
+    
 </main>
 
-<!-- Bottom Bar -->
-
+<!-- Bottom Bar Bar -->
 <footer class="bottomBar">
+    <!-- Hidden Unified File Input for Images and Media -->
+    <input type="file" id="imageInput" accept="image/*,video/*" style="display: none;">
 
     <button id="imageBtn" class="circleButton">💩</button>
-
     <button id="micBtn" class="circleButton">🎙️</button>
-
+    
     <div class="promptContainer">
-
-        <textarea
-            id="prompt"
-            rows="1"
-            placeholder="Drop your bullshit..."
-            spellcheck="true"></textarea>
-
+        <textarea id="prompt" rows="1" placeholder="Drop your bullshit..." spellcheck="true"></textarea>
     </div>
 
     <button id="videoBtn" class="circleButton">🎬</button>
-
     <button id="sendBtn" class="circleButton">🧠</button>
-
 </footer>
 
 <script src="script.js"></script>
-
 <script>
-
 if ("serviceWorker" in navigator) {
-
     window.addEventListener("load", () => {
-
-        navigator.serviceWorker.register("./sw.js")
-            .catch(console.error);
-
+        navigator.serviceWorker.register("./sw.js").catch(console.error);
     });
-
 }
-
 </script>
 
 </body>
-
 </html>
