@@ -2,84 +2,287 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
     <title>Ask Brice</title>
-    <meta name="theme-color" content="#000000">
 
-    <link rel="manifest" href="manifest.json">
+    <meta
+        name="theme-color"
+        content="#0d0d0d">
 
-    <link rel="preconnect" href="https://googleapis.com">
-    <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Caveat:wght@700&family=Inter:wght@400;500;600;700;800&family=Permanent+Marker&family=Rubik+Dirt&display=swap" rel="stylesheet">
+    <link
+        rel="manifest"
+        href="manifest.json">
 
-    <link rel="stylesheet" href="style.css">
+    <link 
+        rel="icon" 
+        href="assets/icons/bull.svg">
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com">
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Permanent+Marker&display=swap"
+        rel="stylesheet">
+
+    <link
+        rel="stylesheet"
+        href="style.css">
+
 </head>
 
 <body>
 
-<!-- Sidebar -->
-<aside id="sidebar" class="sidebar">
-    <div class="sidebar-header">
-        <h2>Your Past 💩</h2>
-        <button id="newChatBtn">+ Fresh Bullshit</button>
+<div id="app">
+
+<!-- ==========================================
+     LOADING SCREEN
+========================================== -->
+
+welcomeScreen">
+
+            <div class="welcomeLogo">
+
+                🐂
+
+            </div>
+
+
+        🐂
+
     </div>
 
-    <div class="voiceSettings">
-        <label for="voiceSelect">🗣️ Brice's Voice</label>
-        <div class="voiceControls">
-            <select id="voiceSelect"></select>
-            <button id="speakerToggle" class="speakerToggle" type="button" title="Toggle voice">
-                🔊
-            </button>
-        </div> 
-    </div> 
+    <h2>ASK BRICE</h2>
 
-    <div id="historyList"></div>
+</div>
+
+<!-- ==========================================
+     SIDEBAR
+========================================== -->
+
+<aside
+    id="sidebar"
+    class="sidebar">
+
+    <div class="sidebarHeader">
+
+        <div class="sidebarLogo">
+
+            🐂 ASK BRICE
+
+        </div>
+
+        <button
+            id="newChatBtn"
+            class="newChatButton">
+
+            + New Chat
+
+        </button>
+
+        <input
+            id="searchChats"
+            type="text"
+            placeholder="Search chats...">
+
+    </div>
+
+    <div
+        id="historyList"
+        class="historyList"></div>
+
 </aside>
 
-<!-- Header -->
+<!-- ==========================================
+     HEADER
+========================================== -->
+
 <header class="header">
-    <button id="menuBtn" class="iconButton">☰</button>
-    <div class="logo">
-        <span class="brainEmoji">🧠</span>
-        <span>Ask Brice</span>
+
+    <button
+        id="menuBtn"
+        class="iconButton">
+
+        ☰
+
+    </button>
+
+    <div class="bullLogo">
+    <img
+        src="assets/icons/bull.svg"
+        alt="Ask Brice Logo">
+</div>
+
+        <div class="logoText">
+
+            ASK BRICE
+
+        </div>
+
     </div>
+
+    <button
+        id="settingsBtn"
+        class="iconButton">
+
+        ⚙️
+
+    </button>
+
 </header>
 
-<!-- Chat Window -->
-<main id="chatWindow" class="chatWindow">
-    <section id="welcomeScreen">
-        <h1>WHAT THE FUCK<br>DO YOU WANT?</h1>
-        <p class="welcomeScript">Ask me anything...</p>
-        <p class="subtitle">I'll figure that shit out.</p>
-    
-</main>
+<!-- ==========================================
+     MAIN
+========================================== -->
 
-<!-- Bottom Bar Bar -->
-<footer class="bottomBar">
-    <!-- Hidden Unified File Input for Images and Media -->
-    <input type="file" id="imageInput" accept="image/*,video/*" style="display: none;">
+<main class="app">
 
-    <button id="imageBtn" class="circleButton">💩</button>
-    <button id="micBtn" class="circleButton">🎙️</button>
-    
-    <div class="promptContainer">
-        <textarea id="prompt" rows="1" placeholder="Drop your bullshit..." spellcheck="true"></textarea>
+    <section
+        id="chatWindow"
+        class="chatWindow">
+
+        <div
+            id="welcomeScreen"
+            class="
+            <h1>Ask Brice</h1>
+
+            <p>Bullshit detector.</p>
+
+        </div>
+
+    </section>
+
+    <div
+        id="typingIndicator"
+        class="typingIndicator hidden">
+
+        <span></span>
+        <span></span>
+        <span></span>
+
     </div>
 
-    <button id="videoBtn" class="circleButton">🎬</button>
-    <button id="sendBtn" class="circleButton">🧠</button>
+    <div
+        id="attachmentPreview"
+        class="attachmentPreview"></div>
+
+</main>
+
+<!-- ==========================================
+     INPUT BAR
+========================================== -->
+
+<footer
+    class="bottomBar">
+
+    <button
+        id="imageBtn"
+        class="circleButton">
+
+        📎
+
+    </button>
+
+    <input
+        id="imageInput"
+        type="file"
+        hidden
+        accept="image/*,.pdf,.doc,.docx,.txt">
+
+    <button
+        id="cameraBtn"
+        class="circleButton">
+
+        📷
+
+    </button>
+
+    <div
+        class="promptContainer">
+
+        <textarea
+            id="prompt"
+            rows="1"
+            autocomplete="off"
+            placeholder="What's your bullshit today?"></textarea>
+
+    </div>
+
+    <button
+        id="micBtn"
+        class="circleButton">
+
+        🎙️
+
+    </button>
+
+    <button
+        id="sendBtn"
+        class="circleButton sendButton">
+
+        💩
+
+    </button>
+
 </footer>
 
-<script src="script.js"></script>
-<script>
-if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js").catch(console.error);
-    });
-}
-</script>
+<!-- ==========================================
+     SETTINGS PANEL
+========================================== -->
+
+<div
+    id="settingsPanel"
+    class="settingsPanel hidden">
+
+    <h2>Settings</h2>
+
+</div>
+
+<!-- ==========================================
+     MESSAGE TEMPLATE
+========================================== -->
+
+<template id="messageTemplate">
+
+    <div class="message">
+
+        <div class="messageContent"></div>
+
+        <div class="messageActions">
+
+            <button class="actionBtn copyBtn">
+
+                📋
+
+            </button>
+
+            <button class="actionBtn speakBtn">
+
+                🔊
+
+            </button>
+
+        </div>
+
+    </div>
+
+</template>
+
+</div>
+
+<script type="module" src="js/app.js"></script>
 
 </body>
+
 </html>
