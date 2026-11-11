@@ -1,0 +1,32 @@
+# Built application files
+*.apk
+*.apks
+*.aab
+
+# Generated files
+bin/
+gen/
+out/
+.build-outputs/
+
+# Gradle files
+.gradle/
+build/
+app/build/
+
+# Local configuration file (sdk.dir, etc.)
+local.properties
+
+# Log file
+*.log
+
+# JetBrains IDE
+.idea/
+*.iml
+.DS_Store
+
+# Temporary / Heap dump files
+*.hprof
+
+# Secrets / env
+.env
