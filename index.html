@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ask Brice</title>
+    <meta name="theme-color" content="#0d0d0d">
+    <link rel="manifest" href="manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+    <!-- ================= SIDEBAR ================= -->
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebarHeader">
+            <div class="sidebarLogo">🐂 ASK BRICE</div>
+            <button id="newChatBtn" class="newChatButton">+ New Chat</button>
+            <input id="searchChats" type="text" placeholder="Search chats...">
+        </div>
+        <div id="historyList" class="historyList"></div>
+    </aside>
+
+    <!-- Overlay for mobile sidebar -->
+    <div id="sidebarOverlay" class="sidebarOverlay"></div>
+
+    <!-- ================= MAIN CONTAINER ================= -->
+    <div class="mainWrapper">
+        <header class="header">
+            <button id="menuBtn" class="iconButton" title="Toggle Sidebar">☰</button>
+            <div class="headerTitle">
+                <span class="headerLogoEmoji">🐂</span>
+                <span class="logoText">ASK BRICE</span>
+            </div>
+            <button id="settingsBtn" class="iconButton" title="Settings">⚙️</button>
+        </header>
+
+        <main class="appMain">
+            <section id="chatWindow" class="chatWindow">
+                <div id="welcomeScreen" class="welcomeScreen">
+                    <div class="welcomeBullLogo">🐂</div>
+                    <h1>HOW CAN I HELP YOU?</h1>
+                    <p class="welcomeSubtitle">Bullshit detector and brutally honest AI assistant.</p>
+                    
+                    <div class="starterPrompts">
+                        <div class="starterCard" data-prompt="Call out every flaw in this business idea: A subscription box for used socks.">
+                            <span class="starterIcon">💼</span>
+                            <div class="starterTitle">Business Reality Check</div>
+                            <div class="starterDesc">Roast a startup or idea...</div>
+                        </div>
+                        <div class="starterCard" data-prompt="I keep procrastinating on going to the gym because I'm 'too busy'. Roast me and tell me what to do.">
+                            <span class="starterIcon">🔥</span>
+                            <div class="starterTitle">Excuse Destroyer</div>
+                            <div class="starterDesc">Call out your laziness...</div>
+                        </div>
+                        <div class="starterCard" data-prompt="My coworker took credit for my presentation and I didn't say anything to keep peace. Did I handle this like a coward?">
+                            <span class="starterIcon">⚖️</span>
+                            <div class="starterTitle">Am I The Problem?</div>
+                            <div class="starterDesc">Brutal interpersonal truth...</div>
+                        </div>
+                        <div class="starterCard" data-prompt="Give me brutal feedback: What are the biggest red flags on a resume that scream unemployable?">
+                            <span class="starterIcon">📄</span>
+                            <div class="starterTitle">Resume Roast</div>
+                            <div class="starterDesc">Unvarnished career critique...</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div id="typingIndicator" class="typingIndicator hidden">
+                <div class="botAvatar">🐂</div>
+                <div class="typingBubble">
+                    <span id="thinkingLabel">Processing your bullshit...</span>
+                    <div class="dots"><span></span><span></span><span></span></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- ================= FOOTER INPUT BAR ================= -->
+        <footer class="bottomBar">
+            <div id="attachmentPreview" class="attachmentPreview hidden">
+                <img id="previewImg" src="" alt="Attachment">
+                <span id="clearAttachment" title="Remove attachment">×</span>
+            </div>
+
+            <div class="inputContainer">
+                <button id="plusBtn" class="circleButton" title="Attach Image">📎</button>
+                <input id="imageInput" type="file" accept="image/*" hidden>
+
+                <button id="micBtn" class="circleButton" title="Voice Input">🎤</button>
+
+                <textarea id="prompt" rows="1" placeholder="What's on your mind?"></textarea>
+
+                <button id="sendBtn" class="circleButton sendButton" title="Send">➤</button>
+            </div>
+        </footer>
+    </div>
+</div>
+
+<!-- ================= SETTINGS MODAL ================= -->
+<div id="settingsModal" class="modalOverlay hidden">
+    <div class="modalContent">
+        <div class="modalHeader">
+            <h3>⚙️ BRICE SETTINGS</h3>
+            <button id="closeSettings" class="iconButton">×</button>
+        </div>
+        <div class="modalBody">
+            <div class="settingGroup">
+                <label>BRUTALITY MODE</label>
+                <div class="modeOption" data-mode="UNFILTERED">
+                    <input type="radio" name="briceMode" value="UNFILTERED" checked>
+                    <div>
+                        <strong>Unfiltered Gangster</strong>
+                        <p>Cold, ruthless, profanity naturally, immediate bullshit detector.</p>
+                    </div>
+                </div>
+                <div class="modeOption" data-mode="TOUGH_LOVE">
+                    <input type="radio" name="briceMode" value="TOUGH_LOVE">
+                    <div>
+                        <strong>Tough Love</strong>
+                        <p>Direct, firm, no excuses, constructive blunt advice.</p>
+                    </div>
+                </div>
+                <div class="modeOption" data-mode="SARCASTIC">
+                    <input type="radio" name="briceMode" value="SARCASTIC">
+                    <div>
+                        <strong>Sarcastic & Witty</strong>
+                        <p>Heavy eye-rolling, cynical realism, dry humor.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settingGroup">
+                <label>GEMINI API KEY</label>
+                <input id="apiKeyInput" type="password" placeholder="Paste custom Gemini API key (optional)...">
+                <small class="settingHelp">Leave blank to use default environment API key.</small>
+            </div>
+
+            <div class="settingGroup">
+                <label>DATA MANAGEMENT</label>
+                <button id="clearAllBtn" class="dangerButton">Wipe All Chat Conversations</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

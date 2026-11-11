@@ -1,9 +1,0 @@
-<resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="background_dark">#FF0D0D0D</color>
-    <color name="surface_dark">#FF161618</color>
-    <color name="surface_variant_dark">#FF222226</color>
-    <color name="primary_crimson">#FFFF3B30</color>
-    <color name="secondary_gold">#FFD4AF37</color>
-</resources>

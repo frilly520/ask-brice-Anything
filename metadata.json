@@ -1,6 +1,6 @@
 {
   "name": "Ask Brice",
-  "description": "Bullshit detector and brutally honest AI assistant.",
+  "description": "Bullshit detector and brutally honest AI assistant web app.",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
