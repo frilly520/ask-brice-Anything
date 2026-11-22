@@ -4,6 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "build": "mkdir -p public/icons public/assets/aistudio && cp -f index.html style.css script.js manifest.json sw.js public/ && cp -rf icons/* public/icons/ && cp -rf assets/* public/assets/",
     "dev": "node server.js",
     "start": "node server.js"
   }
