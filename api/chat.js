@@ -8,7 +8,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { messages, model = "gemini-2.5-flash", systemInstruction, customApiKey } = req.body;
+    const { messages, model = "gemini-3.8-flash", systemInstruction, customApiKey } = req.body;
+    const targetModel = (!model || model === "gemini-2.5-flash" || model === "gpt-4o") ? "gemini-3.8-flash" : model;
     const apiKey = customApiKey || process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
@@ -49,7 +50,7 @@ export default async function handler(req, res) {
     }
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${targetModel}:generateContent?key=${apiKey}`,
       {
         method: "POST",
         headers: {
