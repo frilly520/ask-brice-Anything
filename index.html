@@ -6,72 +6,129 @@
     <title>Ask Brice</title>
     <meta name="theme-color" content="#0d0d0d">
     <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icons/icon-192.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Permanent+Marker&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 
 <div id="app">
-    <!-- ================= SIDEBAR ================= -->
+    <!-- ================= EXPANDABLE TOP-LEFT MENU / DRAWER ================= -->
     <aside id="sidebar" class="sidebar">
         <div class="sidebarHeader">
-            <div class="sidebarLogo">🐂 ASK BRICE</div>
-            <button id="newChatBtn" class="newChatButton">+ New Chat</button>
-            <input id="searchChats" type="text" placeholder="Search chats...">
+            <div class="sidebarTopRow">
+                <div class="sidebarLogo">
+                    <img src="public/assets/aistudio/Screenshot_20261120_192458_Chrome_2e29c651.jpg" onerror="this.onerror=null;this.src='assets/brain-logo.png';" alt="Ask Brice Logo" class="sidebarLogoImg">
+                    <span>ASK BRICE</span>
+                </div>
+                <button id="closeSidebarBtn" class="iconButton mobileOnly" title="Close Menu" aria-label="Close Menu">✕</button>
+            </div>
+
+            <button id="newChatBtn" class="newChatButton">
+                <span class="plusSymbol">+</span> New Conversation
+            </button>
+
+            <div class="searchWrapper">
+                <input id="searchChats" type="text" placeholder="Search previous conversations...">
+            </div>
         </div>
+
+        <div class="sidebarSectionTitle">PREVIOUS CONVERSATIONS</div>
         <div id="historyList" class="historyList"></div>
+
+        <!-- Sidebar Footer: User Account & Settings -->
+        <div class="sidebarFooter">
+            <!-- Google Auth / Profile Section -->
+            <div id="authContainer" class="authContainer">
+                <!-- Signed Out State -->
+                <div id="signedOutView" class="signedOutView">
+                    <button id="googleSignInBtn" class="googleSignInBtn" type="button">
+                        <svg class="googleIcon" viewBox="0 0 24 24" width="18" height="18">
+                            <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+                            <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24z"/>
+                            <path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14z"/>
+                            <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96z"/>
+                        </svg>
+                        <span>Sign in with Google</span>
+                    </button>
+                    <div id="googleGsiButtonContainer" class="googleGsiButtonContainer"></div>
+                </div>
+
+                <!-- Signed In State -->
+                <div id="signedInView" class="signedInView hidden">
+                    <div class="userProfileRow">
+                        <img id="userAvatar" src="" alt="User Avatar" class="userAvatar">
+                        <div class="userDetails">
+                            <div id="userNameDisplay" class="userNameDisplay">User</div>
+                            <div id="userEmailDisplay" class="userEmailDisplay">user@example.com</div>
+                        </div>
+                    </div>
+                    <button id="signOutBtn" class="signOutBtn" type="button" title="Sign Out">Sign Out</button>
+                </div>
+            </div>
+
+            <button id="sidebarSettingsBtn" class="sidebarActionBtn" type="button">
+                <span>⚙️</span>
+                <span>Settings &amp; Personalization</span>
+            </button>
+        </div>
     </aside>
 
-    <!-- Overlay for mobile sidebar -->
+    <!-- Overlay for sidebar drawer -->
     <div id="sidebarOverlay" class="sidebarOverlay"></div>
 
     <!-- ================= MAIN CONTAINER ================= -->
     <div class="mainWrapper">
         <header class="header">
-            <button id="menuBtn" class="iconButton" title="Toggle Sidebar">☰</button>
+            <div class="headerLeft">
+                <button id="menuBtn" class="iconButton" title="Expand Menu" aria-label="Expand Menu">☰</button>
+            </div>
+
             <div class="headerTitle">
-                <span class="headerLogoEmoji">🐂</span>
+                <div class="headerLogoWrap">
+                    <img
+                        id="headerLogoImg"
+                        src="public/assets/aistudio/Screenshot_20261120_192458_Chrome_2e29c651.jpg"
+                        onerror="this.onerror=null;this.src='assets/brain-logo.png';"
+                        alt="Ask Brice Logo"
+                        class="headerLogoImg">
+                </div>
                 <span class="logoText">ASK BRICE</span>
             </div>
-            <button id="settingsBtn" class="iconButton" title="Settings">⚙️</button>
+
+            <div class="headerRight">
+                <button id="headerAuthBadge" class="headerAuthBadge" title="Account &amp; Sign-In" type="button">
+                    <img id="headerUserAvatar" src="" alt="" class="headerUserAvatar hidden">
+                    <span id="headerAuthText">Sign In</span>
+                </button>
+                <button id="settingsBtn" class="iconButton" title="Personalization Settings" aria-label="Personalization Settings">⚙️</button>
+            </div>
         </header>
+
+        <!-- Active Context Banner (when extra context/system note is attached to the chat) -->
+        <div id="contextBanner" class="contextBanner hidden">
+            <div class="contextBannerLeft">
+                <span class="contextBadgeIcon">📌</span>
+                <span id="contextBannerText" class="contextBannerText">Custom context active</span>
+            </div>
+            <div class="contextBannerActions">
+                <button id="editContextBtn" class="textLinkBtn" type="button">Edit</button>
+                <button id="clearContextBtn" class="textLinkBtn dangerText" type="button">Remove</button>
+            </div>
+        </div>
 
         <main class="appMain">
             <section id="chatWindow" class="chatWindow">
-                <div id="welcomeScreen" class="welcomeScreen">
-                    <div class="welcomeBullLogo">🐂</div>
-                    <h1>HOW CAN I HELP YOU?</h1>
-                    <p class="welcomeSubtitle">Bullshit detector and brutally honest AI assistant.</p>
-                    
-                    <div class="starterPrompts">
-                        <div class="starterCard" data-prompt="Call out every flaw in this business idea: A subscription box for used socks.">
-                            <span class="starterIcon">💼</span>
-                            <div class="starterTitle">Business Reality Check</div>
-                            <div class="starterDesc">Roast a startup or idea...</div>
-                        </div>
-                        <div class="starterCard" data-prompt="I keep procrastinating on going to the gym because I'm 'too busy'. Roast me and tell me what to do.">
-                            <span class="starterIcon">🔥</span>
-                            <div class="starterTitle">Excuse Destroyer</div>
-                            <div class="starterDesc">Call out your laziness...</div>
-                        </div>
-                        <div class="starterCard" data-prompt="My coworker took credit for my presentation and I didn't say anything to keep peace. Did I handle this like a coward?">
-                            <span class="starterIcon">⚖️</span>
-                            <div class="starterTitle">Am I The Problem?</div>
-                            <div class="starterDesc">Brutal interpersonal truth...</div>
-                        </div>
-                        <div class="starterCard" data-prompt="Give me brutal feedback: What are the biggest red flags on a resume that scream unemployable?">
-                            <span class="starterIcon">📄</span>
-                            <div class="starterTitle">Resume Roast</div>
-                            <div class="starterDesc">Unvarnished career critique...</div>
-                        </div>
-                    </div>
-                </div>
+                <!-- Populated dynamically by script.js -->
             </section>
 
             <div id="typingIndicator" class="typingIndicator hidden">
-                <div class="botAvatar">🐂</div>
+                <div class="botAvatar">
+                    <img src="public/assets/aistudio/Screenshot_20261120_192458_Chrome_2e29c651.jpg" onerror="this.onerror=null;this.src='assets/brain-logo.png';" alt="Brice" class="botAvatarImg">
+                </div>
                 <div class="typingBubble">
                     <span id="thinkingLabel">Processing your bullshit...</span>
                     <div class="dots"><span></span><span></span><span></span></div>
@@ -81,67 +138,257 @@
 
         <!-- ================= FOOTER INPUT BAR ================= -->
         <footer class="bottomBar">
+            <!-- Attachment Chips Row (Images / Files) -->
             <div id="attachmentPreview" class="attachmentPreview hidden">
-                <img id="previewImg" src="" alt="Attachment">
-                <span id="clearAttachment" title="Remove attachment">×</span>
+                <div id="imageAttachmentChip" class="attachmentChip hidden">
+                    <img id="previewImg" src="" alt="Attached preview">
+                    <span id="imageAttachmentName" class="attachmentName">image.jpg</span>
+                    <button id="clearImageAttachment" class="removeAttachmentBtn" type="button" title="Remove image">✕</button>
+                </div>
+
+                <div id="fileAttachmentChip" class="attachmentChip hidden">
+                    <span class="fileChipIcon">📄</span>
+                    <span id="fileAttachmentName" class="attachmentName">document.txt</span>
+                    <button id="clearFileAttachment" class="removeAttachmentBtn" type="button" title="Remove file">✕</button>
+                </div>
+            </div>
+
+            <!-- + Pop-Up Menu (Gemini Style) -->
+            <div id="plusPopupMenu" class="plusPopupMenu hidden" role="menu">
+                <button id="menuUploadImage" class="plusMenuItem" type="button" role="menuitem">
+                    <span class="plusMenuIcon">🖼️</span>
+                    <div class="plusMenuText">
+                        <strong>Upload Image</strong>
+                        <span>Attach a photo or screenshot</span>
+                    </div>
+                </button>
+                <button id="menuUploadFile" class="plusMenuItem" type="button" role="menuitem">
+                    <span class="plusMenuIcon">📄</span>
+                    <div class="plusMenuText">
+                        <strong>Upload File</strong>
+                        <span>Attach a text, code, or document file</span>
+                    </div>
+                </button>
+                <button id="menuAddContext" class="plusMenuItem" type="button" role="menuitem">
+                    <span class="plusMenuIcon">🧠</span>
+                    <div class="plusMenuText">
+                        <strong>Add Context / System Note</strong>
+                        <span>Give Brice background info for this chat</span>
+                    </div>
+                </button>
+                <button id="menuQuickPrompts" class="plusMenuItem" type="button" role="menuitem">
+                    <span class="plusMenuIcon">⚡</span>
+                    <div class="plusMenuText">
+                        <strong>Quick Prompts</strong>
+                        <span>Insert a preset starter prompt</span>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Quick Prompts Sub-Popover -->
+            <div id="quickPromptsPopover" class="quickPromptsPopover hidden">
+                <div class="popoverHeader">
+                    <span>⚡ QUICK PROMPTS</span>
+                    <button id="closeQuickPrompts" class="iconButton smallIconBtn" type="button">✕</button>
+                </div>
+                <div id="quickPromptsList" class="quickPromptsList"></div>
             </div>
 
             <div class="inputContainer">
-                <button id="plusBtn" class="circleButton" title="Attach Image">📎</button>
+                <!-- + Menu Button -->
+                <button id="plusBtn" class="circleButton plusTriggerBtn" type="button" title="Add attachment, context, or prompt" aria-label="Open Add Menu">
+                    <span class="plusBtnIcon">+</span>
+                </button>
+
+                <!-- Hidden File Inputs -->
                 <input id="imageInput" type="file" accept="image/*" hidden>
+                <input id="docInput" type="file" accept=".txt,.md,.json,.csv,.js,.ts,.py,.html,.css,.xml,.log,.yml,.yaml,text/*" hidden>
 
-                <button id="micBtn" class="circleButton" title="Voice Input">🎤</button>
-
+                <!-- Text Input -->
                 <textarea id="prompt" rows="1" placeholder="What's on your mind?"></textarea>
 
-                <button id="sendBtn" class="circleButton sendButton" title="Send">➤</button>
+                <!-- Voice Mic Button -->
+                <button id="micBtn" class="circleButton micTriggerBtn" type="button" title="Voice Input" aria-label="Voice Input">🎤</button>
+
+                <!-- Send Button on Right Side -->
+                <button id="sendBtn" class="circleButton sendButton" type="button" title="Send Message" aria-label="Send Message">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
             </div>
         </footer>
     </div>
 </div>
 
-<!-- ================= SETTINGS MODAL ================= -->
+<!-- ================= PERSONALIZATION SETTINGS MODAL ================= -->
 <div id="settingsModal" class="modalOverlay hidden">
-    <div class="modalContent">
+    <div class="modalContent settingsModalContent">
         <div class="modalHeader">
-            <h3>⚙️ BRICE SETTINGS</h3>
-            <button id="closeSettings" class="iconButton">×</button>
+            <h3>⚙️ PERSONALIZATION &amp; SETTINGS</h3>
+            <button id="closeSettings" class="iconButton" type="button">✕</button>
         </div>
         <div class="modalBody">
-            <div class="settingGroup">
-                <label>BRUTALITY MODE</label>
-                <div class="modeOption" data-mode="UNFILTERED">
-                    <input type="radio" name="briceMode" value="UNFILTERED" checked>
-                    <div>
-                        <strong>Unfiltered Gangster</strong>
-                        <p>Cold, ruthless, profanity naturally, immediate bullshit detector.</p>
+            <!-- Account & Google Sign-In Section -->
+            <div class="settingGroup accountSettingBox">
+                <label>GOOGLE ACCOUNT &amp; SYNC</label>
+                <div id="modalSignedOutBox" class="modalAuthBox">
+                    <p class="settingSubtext">Sign in to save your profile with your local conversations &amp; settings.</p>
+                    <div class="modalAuthBtnRow">
+                        <button id="modalGoogleSignInBtn" class="googleSignInBtn" type="button">
+                            <svg class="googleIcon" viewBox="0 0 24 24" width="18" height="18">
+                                <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+                                <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24z"/>
+                                <path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14z"/>
+                                <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96z"/>
+                            </svg>
+                            <span>Sign in with Google</span>
+                        </button>
                     </div>
                 </div>
-                <div class="modeOption" data-mode="TOUGH_LOVE">
-                    <input type="radio" name="briceMode" value="TOUGH_LOVE">
-                    <div>
-                        <strong>Tough Love</strong>
-                        <p>Direct, firm, no excuses, constructive blunt advice.</p>
-                    </div>
-                </div>
-                <div class="modeOption" data-mode="SARCASTIC">
-                    <input type="radio" name="briceMode" value="SARCASTIC">
-                    <div>
-                        <strong>Sarcastic & Witty</strong>
-                        <p>Heavy eye-rolling, cynical realism, dry humor.</p>
+                <div id="modalSignedInBox" class="modalAuthBox hidden">
+                    <div class="userProfileRow">
+                        <img id="modalUserAvatar" src="" alt="Avatar" class="userAvatar">
+                        <div class="userDetails">
+                            <div id="modalUserName" class="userNameDisplay">User</div>
+                            <div id="modalUserEmail" class="userEmailDisplay">user@example.com</div>
+                        </div>
+                        <button id="modalSignOutBtn" class="signOutBtn" type="button">Sign Out</button>
                     </div>
                 </div>
             </div>
 
+            <!-- 1. Display Name -->
             <div class="settingGroup">
-                <label>GEMINI API KEY</label>
-                <input id="apiKeyInput" type="password" placeholder="Paste custom Gemini API key (optional)...">
-                <small class="settingHelp">Leave blank to use default environment API key.</small>
+                <label for="displayNameInput">DISPLAY NAME / HOW BRICE ADDRESSES YOU</label>
+                <input id="displayNameInput" type="text" class="textInput" placeholder="e.g., Brice, Boss, Chief...">
+            </div>
+
+            <!-- 2. Chatbot Tone / Personality -->
+            <div class="settingGroup">
+                <label for="toneSelect">CHATBOT TONE / PERSONALITY</label>
+                <select id="toneSelect" class="selectInput">
+                    <option value="UNFILTERED">Unfiltered Gangster (Blunt, Ruthless, No-BS)</option>
+                    <option value="BLUNT_DIRECT">Blunt &amp; Direct (Straight shooter, zero fluff)</option>
+                    <option value="TOUGH_LOVE">Tough Love Coach (Firm, demanding, constructive)</option>
+                    <option value="SARCASTIC">Sarcastic &amp; Witty (Dry humor, cynical realism)</option>
+                    <option value="CASUAL">Casual &amp; Chill (Relaxed, conversational)</option>
+                    <option value="TECHNICAL">Detailed &amp; Technical (Analytical, deep-dive precision)</option>
+                    <option value="CUSTOM">Custom Personality Instructions</option>
+                </select>
             </div>
 
             <div class="settingGroup">
-                <label>DATA MANAGEMENT</label>
-                <button id="clearAllBtn" class="dangerButton">Wipe All Chat Conversations</button>
+                <label for="customSystemInput">CUSTOM SYSTEM INSTRUCTIONS (OPTIONAL)</label>
+                <textarea id="customSystemInput" rows="3" class="textareaInput" placeholder="Add specific rules or personality instructions for Brice..."></textarea>
+            </div>
+
+            <!-- 3. Response Length & Formatting -->
+            <div class="settingGridRow">
+                <div class="settingGroup">
+                    <label for="responseLengthSelect">RESPONSE LENGTH</label>
+                    <select id="responseLengthSelect" class="selectInput">
+                        <option value="CONCISE">Concise (Short &amp; punchy)</option>
+                        <option value="BALANCED">Balanced</option>
+                        <option value="THOROUGH">Thorough (In-depth)</option>
+                    </select>
+                </div>
+
+                <div class="settingGroup">
+                    <label for="responseFormatSelect">FORMATTING STYLE</label>
+                    <select id="responseFormatSelect" class="selectInput">
+                        <option value="AUTO">Natural Mix</option>
+                        <option value="BULLETS">Actionable Bullet Points</option>
+                        <option value="PARAGRAPHS">Clean Paragraphs</option>
+                        <option value="STEP_BY_STEP">Step-by-Step Breakdown</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Optional API Key & Google Client ID -->
+            <details class="advancedSettingsDetails">
+                <summary>Advanced API &amp; OAuth Configuration (Optional)</summary>
+                <div class="advancedSettingsBody">
+                    <div class="settingGroup">
+                        <label for="apiKeyInput">CUSTOM GEMINI API KEY</label>
+                        <input id="apiKeyInput" type="password" class="textInput" placeholder="Leave blank to use server GEMINI_API_KEY...">
+                    </div>
+                    <div class="settingGroup">
+                        <label for="googleClientIdInput">GOOGLE OAUTH CLIENT ID (OPTIONAL)</label>
+                        <input id="googleClientIdInput" type="text" class="textInput" placeholder="xxx.apps.googleusercontent.com (uses instant local sign-in if blank)">
+                    </div>
+                </div>
+            </details>
+
+            <!-- 4. Save & Clear Local Data -->
+            <div class="modalActionsFooter">
+                <button id="clearAllBtn" class="dangerButton" type="button">🗑️ Clear Local Data</button>
+                <button id="saveSettingsBtn" class="primarySaveButton" type="button">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================= ADD CONTEXT / SYSTEM NOTE MODAL ================= -->
+<div id="contextModal" class="modalOverlay hidden">
+    <div class="modalContent">
+        <div class="modalHeader">
+            <h3>🧠 ADD CHAT CONTEXT / SYSTEM NOTE</h3>
+            <button id="closeContextModal" class="iconButton" type="button">✕</button>
+        </div>
+        <div class="modalBody">
+            <p class="settingSubtext">Provide background facts, constraints, project notes, or a situation overview for this specific conversation.</p>
+            <textarea id="chatContextTextarea" rows="5" class="textareaInput" placeholder="e.g., I'm launching an e-commerce store with a $2,000 budget. Be extra critical of my marketing spend..."></textarea>
+            <div class="modalActionsFooter">
+                <button id="clearChatContextModalBtn" class="secondaryButton" type="button">Clear Note</button>
+                <button id="saveChatContextBtn" class="primarySaveButton" type="button">Apply Context</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================= GOOGLE SIGN-IN DIALOG (LOCAL / OAUTH FALLBACK) ================= -->
+<div id="googleSignInModal" class="modalOverlay hidden">
+    <div class="modalContent googleModalContent">
+        <div class="modalHeader">
+            <div class="googleModalTitleRow">
+                <svg viewBox="0 0 24 24" width="22" height="22">
+                    <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+                    <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24z"/>
+                    <path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14z"/>
+                    <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96z"/>
+                </svg>
+                <h3>Sign in with Google</h3>
+            </div>
+            <button id="closeGoogleModal" class="iconButton" type="button">✕</button>
+        </div>
+        <div class="modalBody">
+            <p class="settingSubtext">Sign in to link your profile and persist all conversations and personalization settings on this device.</p>
+
+            <!-- Quick preset account option -->
+            <div id="quickGoogleAccountCard" class="quickGoogleAccountCard">
+                <div class="quickAccountAvatar">B</div>
+                <div class="quickAccountInfo">
+                    <div class="quickAccountName">Brice Alday</div>
+                    <div class="quickAccountEmail">aldaybrice@gmail.com</div>
+                </div>
+                <span class="quickAccountContinue">Continue →</span>
+            </div>
+
+            <div class="dividerRow"><span>or enter your profile details</span></div>
+
+            <div class="settingGroup">
+                <label for="googleNameInput">YOUR NAME</label>
+                <input id="googleNameInput" type="text" class="textInput" placeholder="e.g., Brice Alday">
+            </div>
+            <div class="settingGroup">
+                <label for="googleEmailInput">GOOGLE EMAIL</label>
+                <input id="googleEmailInput" type="email" class="textInput" placeholder="e.g., you@gmail.com">
+            </div>
+            <div class="modalActionsFooter">
+                <button id="cancelGoogleModalBtn" class="secondaryButton" type="button">Cancel</button>
+                <button id="confirmGoogleSignInBtn" class="primarySaveButton" type="button">Continue with Google</button>
             </div>
         </div>
     </div>
